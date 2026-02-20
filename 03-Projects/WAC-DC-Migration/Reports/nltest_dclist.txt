@@ -1,0 +1,13 @@
+﻿Get list of DCs in domain 'wac.net' from '\\WACPRODDC01.WAC.NET'.
+             AD02.WAC.NET        [DS] Site: Default-First-Site-Name
+    W09MVMPADDC01.WAC.NET        [DS] Site: Default-First-Site-Name
+    W09MVMPADDC02.WAC.NET        [DS] Site: Default-First-Site-Name
+         WAC-DC01.WAC.NET        [DS] Site: Default-First-Site-Name
+             AD01.WAC.NET [PDC]  [DS] Site: Default-First-Site-Name
+         WAC-DC02.WAC.NET        [DS] Site: Default-First-Site-Name
+        WACHFDC01.WAC.NET        [DS] Site: Default-First-Site-Name
+      WACPRODDC01.WAC.NET        [DS] Site: Default-First-Site-Name
+        WACHFDC02.WAC.NET        [DS] Site: Default-First-Site-Name
+      WACPRODDC02.WAC.NET        [DS] Site: Default-First-Site-Name
+The command completed successfully
+

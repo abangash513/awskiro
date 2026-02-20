@@ -1,0 +1,119 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:750299845580:task-definition/concierge-medicine-backend:2",
+    "containerDefinitions": [
+        {
+            "name": "backend",
+            "image": "public.ecr.aws/docker/library/nginx:alpine",
+            "cpu": 0,
+            "links": [],
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "entryPoint": [],
+            "command": [],
+            "environment": [
+                {
+                    "name": "AWS_REGION",
+                    "value": "us-east-1"
+                },
+                {
+                    "name": "AWS_S3_BUCKET",
+                    "value": "concierge-medicine-records-750299845580"
+                },
+                {
+                    "name": "DB_PORT",
+                    "value": "5432"
+                },
+                {
+                    "name": "DB_USER",
+                    "value": "concierge_user"
+                },
+                {
+                    "name": "NODE_ENV",
+                    "value": "test"
+                },
+                {
+                    "name": "DB_NAME",
+                    "value": "concierge_medicine"
+                },
+                {
+                    "name": "DB_HOST",
+                    "value": "concierge-medicine-db.cy3avontjliu.us-east-1.rds.amazonaws.com"
+                },
+                {
+                    "name": "DB_PASSWORD",
+                    "value": "RockwallHTS1234$$$"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [],
+            "dnsServers": [],
+            "dnsSearchDomains": [],
+            "extraHosts": [],
+            "dockerSecurityOptions": [],
+            "dockerLabels": {},
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/concierge-medicine",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": [],
+            "credentialSpecs": []
+        }
+    ],
+    "family": "concierge-medicine-backend",
+    "taskRoleArn": "arn:aws:iam::750299845580:role/concierge-medicine-stack-ECSTaskRole-LyvxWMhUcHSX",
+    "executionRoleArn": "arn:aws:iam::750299845580:role/concierge-medicine-stack-ECSTaskExecutionRole-Cjua0y8nws8f",
+    "networkMode": "awsvpc",
+    "revision": 2,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE",
+        "MANAGED_INSTANCES"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "registeredAt": "2025-11-26T21:47:51.375000-06:00",
+    "registeredBy": "arn:aws:iam::750299845580:root"
+}

@@ -1,0 +1,169 @@
+Runway
+v6.268.1
+Home
+Catalog
+Create/Import
+Access Control
+Settings
+Documentation
+Runway Documentation
+
+Runway Documentation
+Component
+
+runway
+Owner
+
+runway
+Lifecycle
+
+production
+
+Source
+Search runway docs
+​
+Skip to content
+Runway Documentation
+Legacy Runway Docs
+Home
+Local Development
+Contributing to Runway
+Tutorials
+CLI
+Runway Ecosystem
+Runway KPaaS Shared Clusters
+Getting Started
+Change Management
+Create a Kubernetes Namespace
+Kubernetes Environment Information
+Created apps
+Log Management
+Webapp
+Conductor
+Ephemeral Environments
+How to simulate a disaster scenario
+Containerized Workload Security Hardening
+Automated App Removal - Cause and Debugging
+KPaaS charge back
+Akamai Edge Caching
+Istio mesh migration
+Cast AI workload rightsizing
+How to Sync webapp from ADO to GitHub
+Creating an app
+Catalog
+Access Control
+Tech Docs
+Github Copilot
+Templates
+Common Errors
+Quick Links
+Mini Hangar Content
+Runway Squad Docs
+Tower API
+Runway Docs Beta
+Table of contents
+Support
+Onboarding
+Responsibilities
+Definitions
+On-Prem Environment
+Architecture Overview
+KPaaS Architecture Overview
+Application Deployment using Runway
+KPaaS Components
+Roadmap
+Q2 2024
+Q3 2024
+Runway Documentation Update
+Please note that the Runway team is currently working on updating our documentation experience. More information will be provided as we work through the updates.
+
+Kubernetes Platform as a Service¶
+Kubernetes Platform as a Service (KPaaS) is an internal cloud computing solution that delivers managed compute resources for containerized applications. It leverages Azure Kubernetes Service (AKS) within our infrastructure and is facilitated by our internal development portal, Runway. KPaaS abstracts away the complexities of infrastructure management, providing developers with a streamlined platform to deploy, manage, and scale their containerized applications efficiently. By utilizing KPaaS, teams can focus on application development and less on managing the underlying infrastructure, resulting in improved productivity and faster time-to-market for our products.
+
+Support¶
+For all production and urgent issues, please reach out to GSC to open a ticket and page the Kubernetes-as-a-Service_(KaaS) group via xMatters.
+
+For all other support requests and questions, please make a post on the #runway-kpaas-support channel on Slack. Please provide as much information as possible, including the relevant cluster and namespace. The Slack channel is only monitored during business hours. You can expect a response within two hours of posting your issue or question. Please follow Slack best practices - use threads for communication, avoid posting threaded messages to the main channel in most cases, and avoid tagging @here or @channel.
+
+Onboarding¶
+Onboarding to the KPaaS clusters is done via Runway through the Create and Import Plugin. This documentation provides step-by-step information on how to create an app, which can also be used to deploy an existing image.
+
+Responsibilities¶
+This chart describes the responsibilities of the platform (KPaaS) team and the application team, indicating who is Responsible, Accountable, Consulted, and Informed for each item.
+
+Item	Platform Team	Application Team
+Kubernetes Cluster Lifecycle		
+Provisioning	R/A	I
+Upgrades/Patching	R/A	I
+Workload migration	R/A	C
+Backup and recovery	R/A	C
+Application Workloads		
+Deployment	I	R
+Life cycle management	I	R
+Deletion/Decommission	I	R
+Application high availability (cross-region)	I	R
+Resources Management		
+Node scaling	R/A	I
+Pod scaling	I	R
+Pod resources	I	R
+Namespace resources	C/I	R
+DR Exercise		
+Platform disaster recovery	R/A	C
+Application disaster recovery	I	R/A
+Networking		
+Egress/ingress	R	I
+Application FARs	I	R
+Observability		
+Platform monitoring	R/A	I
+Application monitoring	C/I	R
+Platform alerting	R/A	I
+Application alerting	C/I	R
+Security		
+Image hardening	C	R/A
+Pod security standards	R/A	I
+Platform vulnerabilities	R/A	I
+Application vulnerabilities	I	R/A
+Kubernetes RBAC	R/A	I
+Cost monitoring and optimization		
+Bin-packing	R/A	I
+Application optimization	C/I	R/A
+Node resource optimization	R/A	I
+Definitions¶
+Role	Description
+Responsible (R)	The person or role responsible for doing the work to complete the task.
+Accountable (A)	The person or role ultimately answerable for the correct and thorough completion of the task.
+Consulted (C)	People or roles consulted for input, feedback, or expertise before completing the task.
+Informed (I)	People or roles that need to be informed of the task's progress or results.
+On-Prem Environment¶
+The only approved pattern to onboard to the on-prem clusters is Kafka Connect using the Runway template.
+
+Architecture Overview¶
+KPaaS Architecture Overview¶
+overview
+
+Application Deployment using Runway¶
+deployment
+
+KPaaS Components¶
+components
+
+Roadmap¶
+The KPaaS Roadmap is always subject to change. For the latest, you can view active issues here.
+
+Q2 2024¶
+Enable KEDA for Webapps with ServiceBus trigger
+PCI Clusters to use standardized automation and bootstrap
+Cost optimization through right-sizing and bin-packing
+Migration of observability solution from Datadog to Grafana Cloud
+Improve security posture for applications
+Migration of AKS clusters to use Azure CNI Overlay Network
+Enhancement of platform resilience via load testing and disaster recovery testing
+Q3 2024¶
+Long-running Conductor pattern
+Increased observability maturity in Grafana
+January 23, 2026
+Previous
+Runway Ecosystem
+Next
+Change Management
+

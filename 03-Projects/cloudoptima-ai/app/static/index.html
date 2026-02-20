@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudOptima AI - Azure FinOps Dashboard</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">☁️</span>
+            <span class="brand-text">CloudOptima AI</span>
+        </div>
+        <div class="nav-status">
+            <span id="api-status" class="status-badge status-loading">Connecting...</span>
+            <span id="last-updated"></span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="card summary-card">
+                <div class="card-icon">💰</div>
+                <div class="card-content">
+                    <h3>Total Cost (30d)</h3>
+                    <div class="card-value" id="total-cost">$--</div>
+                    <div class="card-trend" id="cost-trend"></div>
+                </div>
+            </div>
+            <div class="card summary-card">
+                <div class="card-icon">📊</div>
+                <div class="card-content">
+                    <h3>Potential Savings</h3>
+                    <div class="card-value savings" id="potential-savings">$--</div>
+                    <div class="card-subtitle" id="savings-subtitle">per month</div>
+                </div>
+            </div>
+            <div class="card summary-card">
+                <div class="card-icon">⚠️</div>
+                <div class="card-content">
+                    <h3>Active Alerts</h3>
+                    <div class="card-value alert-value" id="active-alerts">--</div>
+                    <div class="card-subtitle" id="alerts-subtitle">unacknowledged</div>
+                </div>
+            </div>
+            <div class="card summary-card">
+                <div class="card-icon">💡</div>
+                <div class="card-content">
+                    <h3>Recommendations</h3>
+                    <div class="card-value" id="recommendation-count">--</div>
+                    <div class="card-subtitle" id="rec-subtitle">optimization opportunities</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-grid">
+            <div class="card chart-card">
+                <h3>Daily Cost Trend</h3>
+                <canvas id="cost-chart"></canvas>
+            </div>
+            <div class="card chart-card">
+                <h3>Cost by Service</h3>
+                <canvas id="service-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tables Row -->
+        <div class="tables-grid">
+            <div class="card table-card">
+                <h3>Top Spending Resources</h3>
+                <table id="top-resources">
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Type</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resources-body">
+                        <tr><td colspan="3" class="loading">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card table-card">
+                <h3>Cost Optimization Recommendations</h3>
+                <div id="recommendations-list" class="recommendations-list">
+                    <div class="loading">Loading recommendations...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budgets Section -->
+        <div class="card full-width">
+            <h3>Budget Status</h3>
+            <div id="budgets-list" class="budgets-grid">
+                <div class="loading">Loading budgets...</div>
+            </div>
+        </div>
+
+        <!-- Alerts Section -->
+        <div class="card full-width">
+            <h3>Recent Alerts</h3>
+            <div id="alerts-list" class="alerts-list">
+                <div class="loading">Loading alerts...</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>CloudOptima AI - Azure FinOps Cost Optimization Platform</p>
+        <p>API: <a href="/docs" target="_blank">/docs</a> | <a href="/redoc" target="_blank">/redoc</a></p>
+    </footer>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

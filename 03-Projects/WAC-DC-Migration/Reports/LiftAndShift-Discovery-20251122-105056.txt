@@ -1,0 +1,301 @@
+﻿=== AWS DEV ENVIRONMENT DESIGN INPUTS ===
+AWS Account ID (Dev): 749006369142
+Dev VPC CIDR: 10.60.0.0/16
+Dev VPC ID: yes
+Dev AD Subnets: 
+Dev App Subnets: 
+Dev DB Subnets: 
+Connectivity Type: Site to Site
+On-Prem VPN Public IP: 
+Use AWS Managed AD: N
+Planned Trust Type: TWO
+Cutover Strategy: Pilot then rollout
+
+=== FOREST AND DOMAIN INFORMATION ===
+Forest Name: WAC.NET
+Forest Functional Level: Windows2008Forest
+Domain Name: WAC.NET
+Domain Functional Level: Windows2008Domain
+Domain NetBIOS: WAC
+Domain SID: S-1-5-21-515967899-963894560-725345543
+
+=== DOMAIN CONTROLLERS ===
+DC Name: AD02
+  FQDN: AD02.WAC.NET
+  IP Address: 10.1.220.9
+  OS Version: Windows Server 2008 R2 Datacenter 6.1 (7601)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+DC Name: W09MVMPADDC01
+  FQDN: W09MVMPADDC01.WAC.NET
+  IP Address: 10.1.220.20
+  OS Version: Windows Server 2012 R2 Datacenter 6.3 (9600)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+DC Name: W09MVMPADDC02
+  FQDN: W09MVMPADDC02.WAC.NET
+  IP Address: 10.1.220.21
+  OS Version: Windows Server 2016 Standard 10.0 (14393)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+DC Name: AD01
+  FQDN: AD01.WAC.NET
+  IP Address: 10.1.220.8
+  OS Version: Windows Server 2008 R2 Datacenter 6.1 (7601)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+DC Name: WACHFDC01
+  FQDN: WACHFDC01.WAC.NET
+  IP Address: 10.1.220.5
+  OS Version: Windows Server 2019 Standard Evaluation 10.0 (17763)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+DC Name: WACHFDC02
+  FQDN: WACHFDC02.WAC.NET
+  IP Address: 10.1.220.6
+  OS Version: Windows Server 2019 Standard Evaluation 10.0 (17763)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+DC Name: WAC-DC01
+  FQDN: WAC-DC01.WAC.NET
+  IP Address: 10.1.220.205
+  OS Version: Windows Server 2022 Datacenter 10.0 (20348)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+DC Name: WAC-DC02
+  FQDN: WAC-DC02.WAC.NET
+  IP Address: 10.1.220.206
+  OS Version: Windows Server 2022 Datacenter 10.0 (20348)
+  Site: Default-First-Site-Name
+  Global Catalog: True
+  Read Only: False
+
+=== FSMO ROLES ===
+Schema Master: AD01.WAC.NET
+Domain Naming Master: AD01.WAC.NET
+PDC Emulator: AD01.WAC.NET
+RID Master: AD02.WAC.NET
+Infrastructure Master: AD02.WAC.NET
+
+=== SITES AND SUBNETS ===
+Site: Default-First-Site-Name
+  Subnet: 223.223.223.0/24
+  Subnet: 192.168.109.0/24
+  Subnet: 192.168.96.0/24
+  Subnet: 192.168.120.0/24
+
+=== DIRECTORY OBJECT COUNTS (SIZING) ===
+Total Users: 829
+Total Groups: 546
+Total Computers: 1100
+
+=== DNS ZONES (ON-PREM) ===
+Zone: 0.18.172.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 0.in-addr.arpa - Type: Primary - DsIntegrated: False
+Zone: 100.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 111.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 114.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 12.17.172.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 121.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 123.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 124.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 125.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 127.in-addr.arpa - Type: Primary - DsIntegrated: False
+Zone: 130.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 152.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 154.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 156.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 160.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 168.192.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 172.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 176.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 178.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 179.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 182.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 183.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 184.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 185.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 188.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 189.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 193.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 194.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 196.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 197.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 220.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 221.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 222.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 223.223.223.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 224.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 225.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 226.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 227.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 228.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 234.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 255.in-addr.arpa - Type: Primary - DsIntegrated: False
+Zone: 4.17.172.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 40.17.172.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 5.0.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: 99.1.10.in-addr.arpa - Type: Primary - DsIntegrated: True
+Zone: testzone.local - Type: Primary - DsIntegrated: True
+Zone: TrustAnchors - Type: Primary - DsIntegrated: True
+Zone: wac.net - Type: Primary - DsIntegrated: True
+Zone: wachvac.net - Type: Primary - DsIntegrated: True
+
+=== GROUP POLICY OBJECTS (SUMMARY) ===
+Total GPOs: 124
+
+=== LOCAL NETWORK CONFIGURATION (THIS SERVER) ===
+Adapter: Ethernet0
+  IP Address: 10.1.220.5
+  Prefix: 24
+  DNS Servers: 127.0.0.1, 10.1.220.8
+
+=== REPLICATION STATUS (repadmin /showrepl) ===
+
+
+Repadmin: running command /showrepl against full DC localhost
+
+Default-First-Site-Name\WACHFDC01
+
+DSA Options: IS_GC 
+
+Site Options: (none)
+
+DSA object GUID: a983bb79-472c-436d-a122-116b485f358d
+
+DSA invocationID: e2f76a41-9008-4c15-8189-c548ecb884c9
+
+
+
+==== INBOUND NEIGHBORS ======================================
+
+
+
+DC=WAC,DC=NET
+
+    Default-First-Site-Name\W09MVMPADDC02 via RPC
+
+        DSA object GUID: fa036391-0a2a-47dd-90af-552ceff2f97a
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\WAC-DC01 via RPC
+
+        DSA object GUID: 0d434c39-dec4-4ba9-a6c2-ba956cd7d3e8
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\W09MVMPADDC01 via RPC
+
+        DSA object GUID: 30f2f45b-9dc9-4eee-9d26-3a5799cadcc6
+
+        Last attempt @ 2025-11-22 10:56:42 was successful.
+
+
+
+CN=Configuration,DC=WAC,DC=NET
+
+    Default-First-Site-Name\W09MVMPADDC02 via RPC
+
+        DSA object GUID: fa036391-0a2a-47dd-90af-552ceff2f97a
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\WAC-DC01 via RPC
+
+        DSA object GUID: 0d434c39-dec4-4ba9-a6c2-ba956cd7d3e8
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\W09MVMPADDC01 via RPC
+
+        DSA object GUID: 30f2f45b-9dc9-4eee-9d26-3a5799cadcc6
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+
+
+CN=Schema,CN=Configuration,DC=WAC,DC=NET
+
+    Default-First-Site-Name\WAC-DC01 via RPC
+
+        DSA object GUID: 0d434c39-dec4-4ba9-a6c2-ba956cd7d3e8
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\W09MVMPADDC02 via RPC
+
+        DSA object GUID: fa036391-0a2a-47dd-90af-552ceff2f97a
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\W09MVMPADDC01 via RPC
+
+        DSA object GUID: 30f2f45b-9dc9-4eee-9d26-3a5799cadcc6
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+
+
+DC=ForestDnsZones,DC=WAC,DC=NET
+
+    Default-First-Site-Name\W09MVMPADDC02 via RPC
+
+        DSA object GUID: fa036391-0a2a-47dd-90af-552ceff2f97a
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\WAC-DC01 via RPC
+
+        DSA object GUID: 0d434c39-dec4-4ba9-a6c2-ba956cd7d3e8
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\W09MVMPADDC01 via RPC
+
+        DSA object GUID: 30f2f45b-9dc9-4eee-9d26-3a5799cadcc6
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+
+
+DC=DomainDnsZones,DC=WAC,DC=NET
+
+    Default-First-Site-Name\W09MVMPADDC02 via RPC
+
+        DSA object GUID: fa036391-0a2a-47dd-90af-552ceff2f97a
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\W09MVMPADDC01 via RPC
+
+        DSA object GUID: 30f2f45b-9dc9-4eee-9d26-3a5799cadcc6
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+    Default-First-Site-Name\WAC-DC01 via RPC
+
+        DSA object GUID: 0d434c39-dec4-4ba9-a6c2-ba956cd7d3e8
+
+        Last attempt @ 2025-11-22 10:56:13 was successful.
+
+
+
+
+=== OPTIONAL AWS DEV CONNECTIVITY TESTS ===
+No AWS MAD DNS IPs were provided, so connectivity tests were skipped.
+

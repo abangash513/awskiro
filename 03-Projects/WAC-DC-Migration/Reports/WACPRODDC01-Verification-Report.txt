@@ -1,0 +1,100 @@
+================================================================================
+WACPRODDC01 - Pre-Promotion Verification Report
+Generated: 2025-11-23
+================================================================================
+
+INSTANCE DETAILS
+----------------
+Instance ID:       i-0745579f46a34da2e
+Private IP:        10.70.10.10 (Static)
+Computer Name:     WACPRODDC01
+Instance Type:     m5.large
+Availability Zone: us-west-2a
+OS:                Windows Server 2019 Datacenter
+VPC:               vpc-014b66d7ca2309134 (Prod-VPC 10.70.0.0/16)
+Subnet:            subnet-05241411b9228d65f (MAD-2a 10.70.10.0/24)
+
+BUILD STATUS
+------------
+✅ Build Status:        COMPLETE
+✅ Build Timestamp:     20251123-194853
+✅ Computer Renamed:    WACPRODDC01
+✅ DNS Configured:      10.1.220.5, 10.1.220.6
+✅ AD DS Installed:     Installed
+✅ RSAT Tools:          Installed
+✅ AWS CLI v2:          Installed
+
+CONNECTIVITY TESTS
+------------------
+✅ DNS Resolution:      SUCCESS
+   - Server: WACHFDC01.WAC.NET (10.1.220.5)
+   - Domain: wac.net resolves to 8 DCs
+   - On-prem DCs detected: AD01, AD02, W09MVMPADDC01, W09MVMPADDC02, 
+                           WACHFDC01, WACHFDC02, WAC-DC01, WAC-DC02
+
+✅ LDAP Connectivity:   SUCCESS
+   - WACHFDC01 (10.1.220.5:389): Connected
+   - WACHFDC02 (10.1.220.6:389): Connected
+
+✅ Network Status:      HEALTHY
+   - System Status:     ok
+   - Instance Status:   ok
+   - SSM Agent:         Online
+
+NETWORK INFRASTRUCTURE
+----------------------
+✅ Transit Gateway:     tgw-0c147b016ed157991 (available)
+✅ VPN Connection:      vpn-025a12d4214e767b7 (1 tunnel UP)
+✅ Route to On-Prem:    10.1.0.0/16 → TGW → VPN
+✅ Security Group:      sg-0b0bd0839e63d3075 (WAC-Prod-ADMT-Enhanced-SG)
+
+READY FOR DC PROMOTION
+----------------------
+✅ All pre-requisites met
+✅ Instance is healthy and ready
+✅ Connectivity to on-prem domain verified
+✅ AD DS role installed and ready
+
+NEXT STEPS
+----------
+1. RDP to WACPRODDC01 using: WACPRODDC01.rdp
+   - IP: 10.70.10.10
+   - User: Administrator
+   - Get password: Use AWS Console or decrypt with private key
+
+2. Verify connectivity manually:
+   - Open PowerShell
+   - Run: nslookup wac.net
+   - Run: Test-NetConnection WACHFDC01.wac.net -Port 389
+
+3. Promote to Domain Controller:
+   - Copy Promote-WACPRODDC01.ps1 to the server
+   - Run as Administrator
+   - Provide WAC\Administrator credentials
+   - Set DSRM password
+   - Wait for promotion and reboot (~10-15 minutes)
+
+4. Post-Promotion Verification:
+   - Verify replication: repadmin /replsummary
+   - Check DC status: Get-ADDomainController -Identity WACPRODDC01
+   - Test DNS: dcdiag /test:dns
+   - Monitor event logs for errors
+
+IMPORTANT NOTES
+---------------
+⚠️ This is PRODUCTION environment
+⚠️ DC promotion is MANUAL only - no automation
+⚠️ Ensure on-prem team is aware of new DC
+⚠️ Monitor replication for 24-48 hours after promotion
+⚠️ Do NOT move FSMO roles until fully tested
+⚠️ Keep termination protection enabled
+
+FILES CREATED
+-------------
+- WACPRODDC01.rdp                    (RDP connection file)
+- Promote-WACPRODDC01.ps1            (DC promotion script)
+- WACPRODDC01-monitor.ps1            (Continuous monitoring)
+- WACPRODDC01-CloudFormation.json    (Infrastructure template)
+- WACPRODDC01-Verification-Report.txt (This file)
+
+================================================================================

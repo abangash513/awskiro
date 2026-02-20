@@ -1,0 +1,7 @@
+﻿Schema master               AD01.WAC.NET
+Domain naming master        AD01.WAC.NET
+PDC                         AD01.WAC.NET
+RID pool manager            AD02.WAC.NET
+Infrastructure master       AD02.WAC.NET
+The command completed successfully.
+

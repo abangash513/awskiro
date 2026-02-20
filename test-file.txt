@@ -1,0 +1,14 @@
+# AWSKiro Workspace Test File
+
+This is a test file created in the AWSKiro workspace folder.
+
+Created on: December 16, 2025
+Purpose: Confirming workspace setup
+
+## Workspace Information
+- Workspace Name: AWSKiro
+- Location: C:\Users\Minip\OneDrive\Desktop\AWSKiro
+- Status: Successfully created and configured
+
+## Next Steps
+This workspace is ready for AWS-related projects and analysis work.

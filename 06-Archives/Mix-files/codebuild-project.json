@@ -1,0 +1,27 @@
+{
+  "name": "concierge-medicine-build",
+  "source": {
+    "type": "S3",
+    "location": "codebuild-concierge-750299845580/source.zip"
+  },
+  "artifacts": {
+    "type": "NO_ARTIFACTS"
+  },
+  "environment": {
+    "type": "LINUX_CONTAINER",
+    "image": "aws/codebuild/standard:7.0",
+    "computeType": "BUILD_GENERAL1_SMALL",
+    "privilegedMode": true,
+    "environmentVariables": [
+      {
+        "name": "AWS_DEFAULT_REGION",
+        "value": "us-east-1"
+      },
+      {
+        "name": "AWS_ACCOUNT_ID",
+        "value": "750299845580"
+      }
+    ]
+  },
+  "serviceRole": "arn:aws:iam::750299845580:role/CodeBuildServiceRole"
+}

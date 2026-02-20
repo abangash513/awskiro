@@ -1,0 +1,896 @@
+/////////////////////////////////////////////////////
+// FLIGHT IDENTITY (ROOT)
+/////////////////////////////////////////////////////
+
+Table FlightIdentity {
+  flightKey varchar [pk]     // canonical ID for a flight
+
+  carrierCode varchar
+  flightNumber varchar
+  flightDate date
+  departureStation varchar
+  arrivalStation varchar
+  dupDepCode varchar
+
+  // other identity / routing fields as needed
+}
+
+
+/////////////////////////////////////////////////////
+// FLIGHT TIMES (LATEST ONLY)
+/////////////////////////////////////////////////////
+
+Table FlightTimes {
+  // 1:1 with FlightIdentity
+  flightKey varchar [pk, ref: > FlightIdentity.flightKey]
+
+  // -------- Scheduled --------
+  scheduled_departureLocal datetime
+  scheduled_departureGMT datetime
+  scheduled_arrivalLocal datetime
+  scheduled_arrivalGMT datetime
+
+  // -------- Estimated / Projected --------
+  estimated_offTime datetime
+  estimated_offTime_timestamp datetime
+  estimated_onTime datetime
+  estimated_onTime_timestamp datetime
+  projected_arrivalTime_FOS datetime
+  projected_arrivalTime_FOS_timestamp datetime
+  projected_departureTime_FOS datetime
+  projected_departureTime_FOS_timestamp datetime
+
+  // -------- Actual --------
+  actual_doorClose datetime
+  actual_doorClose_timestamp datetime
+  actual_inTime datetime
+  actual_inTime_timestamp datetime
+  actual_outTime datetime
+  actual_outTime_timestamp datetime
+  actual_offTime datetime
+  actual_offTime_timestamp datetime
+  actual_onTime datetime
+  actual_onTime_timestamp datetime
+  actual_arr_minutesOfDelay int
+  actual_dep_minutesOfDelay int
+
+  // -------- Latest --------
+  latest_arrivalTime datetime
+  latest_arrivalTime_timestamp datetime
+  latest_departureTime datetime
+  latest_departureTime_timestamp datetime
+
+  // -------- Metadata --------
+  metadata_streamType varchar
+  metadata_sourceTimestamp datetime
+  metadata_updateDate datetime
+  metadata_rawOpshubEvent varchar
+}
+
+
+/////////////////////////////////////////////////////
+// FLIGHT LEG (CURRENT LEGS ONLY)
+/////////////////////////////////////////////////////
+
+Table FlightLeg {
+  // One flight can still have multiple legs
+  flightKey varchar [ref: > FlightIdentity.flightKey]
+  legSequence int
+
+  // Composite PK (no snapshotId, no extra key fields)
+  indexes {
+    (flightKey, legSequence) [pk]
+  }
+
+  // -------- LegInfo --------
+  originStation varchar
+  destinationStation varchar
+  departureGate varchar
+  departureTerminal varchar
+  arrivalGate varchar
+  arrivalTerminal varchar
+  bagClaimInfo varchar
+  legType varchar   // thru / turn / etc.
+
+  // -------- LegEquipment --------
+  tailNumber varchar
+  registrationNumber varchar
+  assignedEquipmentType varchar
+  assignedEquipmentCode varchar
+  scheduledEquipmentCode varchar
+  previousTailNumber varchar
+  isCreatedWithoutTail boolean
+
+  // -------- LegLinkage (prev/next leg) --------
+  nextLeg_flightKey varchar           // optional FK back to another FlightIdentity
+  nextLeg_legSequence int
+
+  prevLeg_flightKey varchar           // previous leg linkage
+  prevLeg_legSequence int
+
+  // -------- LegStatus --------
+  departureStatus varchar
+  departureStatus_timestamp datetime
+  arrivalStatus varchar
+  arrivalStatus_timestamp datetime
+  legStatus varchar
+  legStatus_timestamp datetime
+  cancelledCode varchar
+  delayReasonCodes varchar
+  reasonCode varchar
+  reasonDescription varchar
+  flightReleaseStatus varchar
+  groundInterrupted boolean
+  paxStatus varchar
+  fitForDutyStatus varchar
+
+  // -------- Metadata --------
+  streamType varchar
+  sourceTimestamp datetime
+  updateDate datetime
+  rawOpshubEvent varchar
+}
+
+
+/////////////////////////////////////////////////////
+// FLIGHT EVENT (LATEST STATE)
+/////////////////////////////////////////////////////
+
+Table FlightEvent {
+  // 1:1 with FlightIdentity
+  flightKey varchar [pk, ref: > FlightIdentity.flightKey]
+
+  FUFI varchar
+
+  currentEventType varchar
+  currentEventTime datetime
+  currentEventSequence int
+
+  lastEventType varchar
+  lastEventTime datetime
+
+  metadata_streamType varchar
+  metadata_updateTimestamp datetime
+}
+
+
+/////////////////////////////////////////////////////
+// FLIGHT EVENT HISTORY (ALREADY HISTORICAL BY NATURE)
+/////////////////////////////////////////////////////
+
+Table EventHistory {
+  id int [pk, increment]
+
+  flightKey varchar [ref: > FlightIdentity.flightKey]
+
+  event varchar
+  eventData json
+  dataTime json
+  fltHubTimeStamp datetime
+  sourceTimestamp datetime
+  dbUpdatedTime datetime
+  trackingId varchar
+  snapshotId varchar
+  streamType varchar
+  rawOpshubEvent json
+}
+
+
+/////////////////////////////////////////////////////
+// FLIGHT METRICS (LATEST ONLY)
+/////////////////////////////////////////////////////
+
+Table FlightMetrics {
+  // 1:1 with FlightIdentity
+  flightKey varchar [pk, ref: > FlightIdentity.flightKey]
+
+  // -------- Fuel Metrics --------
+  plannedDepartureFuel int
+  plannedArrivalFuel int
+  actualDepartureFuel int
+  actualArrivalFuel int
+  planOff int
+  planOn int
+  actualOff int
+  actualOn int
+  fuel_sourceTimestamp datetime
+  fuel_updateTimestamp datetime
+
+  // -------- Passenger Metrics --------
+  plannedPaxCount int
+  plannedPaxCount_timestamp datetime
+  thruPaxCount int
+  thruPaxCount_timestamp datetime
+  downlinePaxCount int
+  downlinePaxCount_timestamp datetime
+  pax_sourceTimestamp datetime
+  pax_updateTimestamp datetime
+
+  // -------- Payload / Weights Metrics --------
+  payload int
+  zeroFuelWeight int
+  dryOperatingWeight int
+  maxZFW int
+  maxLandingWeight int
+  maxTakeoffWeight int
+  loadStatus varchar
+  payload_sourceTimestamp datetime
+  payload_updateTimestamp datetime
+
+  // -------- Performance Metrics --------
+  antiIce bool
+  headWind varchar
+  primaryRunway varchar
+  runwayCondition varchar
+  qnhPressure varchar
+  temperature varchar
+  thrustRating varchar
+  tpsEquipCode varchar
+  wtRestricted bool
+  engineTemperature int
+  fltRelStatus varchar
+  arrivalAttemptCount int
+  arrivalAttemptCount_timestamp datetime
+  departureAttemptCount int
+  departureAttemptCount_timestamp datetime
+  cancelledInLast30daysCount int
+  cancelledInLast30daysCount_timestamp datetime
+  toa varchar
+  perf_sourceTimestamp datetime
+  perf_updateTimestamp datetime
+}
+
+
+/////////////////////////////////////////////////////
+// FLIGHT LOAD PLANNING (LATEST ONLY)
+/////////////////////////////////////////////////////
+
+Table FlightLoadPlanning {
+  // 1:1 with FlightIdentity
+  flightKey varchar [pk, ref: > FlightIdentity.flightKey]
+
+  // -------- LoadPlanPaxCounts --------
+  loadPlanPaxCounts_localF int
+  loadPlanPaxCounts_localY int
+  loadPlanPaxCounts_thruF int
+  loadPlanPaxCounts_thruY int
+  loadPlanPaxCounts_localJumpSeat int
+  loadPlanPaxCounts_thruJumpSeat int
+  loadPlanPaxCounts_paxStatus varchar
+  loadPlanPaxCounts_thruPaxUpdateInd varchar
+  loadPlanPaxCounts_eventSourceTimeStamp datetime
+  loadPlanPaxCounts_updateTimeStamp datetime
+
+  // -------- LoadPlanWeights --------
+  loadPlanWeights_compartmentsCount int
+  loadPlanWeights_local_bagCount int
+  loadPlanWeights_local_bagWeight int
+  loadPlanWeights_local_containerWeight int
+  loadPlanWeights_local_frtWeight int
+  loadPlanWeights_local_mailWeight int
+  loadPlanWeights_local_otherWeight int
+  loadPlanWeights_thru_bagCount int
+  loadPlanWeights_thru_bagWeight int
+  loadPlanWeights_thru_containerWeight int
+  loadPlanWeights_thru_frtWeight int
+  loadPlanWeights_thru_mailWeight int
+  loadPlanWeights_thru_otherWeight int
+  loadPlanWeights_cargoFinalInd varchar
+  loadPlanWeights_stop92MinPaxUpdateInd varchar
+  loadPlanWeights_thruCargoUpdateInd varchar
+  loadPlanWeights_version int
+  loadPlanWeights_wbdsind varchar
+  loadPlanWeights_wbwlind varchar
+  loadPlanWeights_eventSourceTimeStamp datetime
+  loadPlanWeights_updateTimeStamp datetime
+
+  // -------- CabinCapacity --------
+  cabinCapacity_f int
+  cabinCapacity_c int
+  cabinCapacity_p int
+  cabinCapacity_y int
+  cabinCapacity_eventSourceTimeStamp datetime
+}
+
+
+
+
+
+/////////////////////////////////////////////////////
+// ENTITY: FlightPosition
+/////////////////////////////////////////////////////
+
+Table FlightPosition {
+
+  // Primary and Foreign Keys
+  flightPositionID varchar [pk]
+  flightKey varchar
+
+  // Position Object 
+  Position object
+  latitude float
+  longitude float
+  altitude int
+  speed int
+  heading int
+  verticalRate int
+  accuracyIndicator varchar
+  trackAngle int
+
+  // Aircraft Object 
+  Aircraft object
+  registrationNumber varchar
+  noseNumber varchar
+  equipmentType varchar
+
+  // Message Object
+  Message object
+  messageType varchar
+  messageSequence int
+  eventTimestamp datetime
+  receivedTimestamp datetime
+  rawMessage json
+  dataSource varchar
+
+  // Metadata Object
+  Metadata object
+  streamType varchar
+  sourceTimestamp datetime
+  updateDate datetime
+  rawOpshubEvent json
+  snapshotId varchar
+}
+/////////////////////////////////////////////////////
+// STATION DOMAIN
+/////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////
+// ENTITY: StationIdentity (Parent)
+/////////////////////////////////////////////////////
+
+Table StationIdentity {
+
+  // Composite Primary Key
+  icaoAirportID varchar
+  iataAirlineCode varchar
+
+  airportName varchar
+  stationName varchar
+  ataAirportID varchar
+  icaoAreaCode varchar
+  intlStation boolean
+  aaStation boolean
+
+  // Operational fields (flattened into identity)
+  cat3LandingsAllowed boolean
+  coTerminalAllowed boolean
+  stationMaintClass varchar
+
+  // Metadata
+  actionCode varchar
+  timeStamp datetime
+
+  indexes {
+    (icaoAirportID, iataAirlineCode) [pk]
+  }
+}
+
+/////////////////////////////////////////////////////
+// ENTITY: StationGeo
+/////////////////////////////////////////////////////
+
+Table StationGeo {
+
+  // Foreign Key
+  icaoAirportID varchar
+  iataAirlineCode varchar
+
+  latitude varchar
+  longitude varchar
+  elevation int
+  magneticVariation varchar
+  longestRunwayLength int
+  recommendedNAVAID varchar
+  recommendedNAVAIDICAOAreaCode varchar
+
+  indexes {
+    (icaoAirportID, iataAirlineCode)
+  }
+}
+
+/////////////////////////////////////////////////////
+// ENTITY: StationAuthorization
+/////////////////////////////////////////////////////
+
+Table StationAuthorization {
+
+  // Foreign Key
+  icaoAirportID varchar
+  iataAirlineCode varchar
+
+  // Four authorization objects (arrays stored as JSON/blob/object)
+  scheduledLandingsAuthorized json
+  charteredLandingsAuthorized json
+  driftdownLandingsAuthorized json
+  alternateLandingsAuthorized json
+
+  indexes {
+    (icaoAirportID, iataAirlineCode)
+  }
+}
+
+/////////////////////////////////////////////////////
+// ENTITY: StationMetadata
+/////////////////////////////////////////////////////
+
+Table StationMetadata {
+
+  // Foreign Key
+  icaoAirportID varchar
+  iataAirlineCode varchar
+
+  class varchar
+
+  indexes {
+    (icaoAirportID, iataAirlineCode)
+  }
+}
+
+/////////////////////////////////////////////////////
+// Aircraft DOMAIN
+/////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////
+// AIRCRAFT IDENTITY (ROOT ENTITY)
+/////////////////////////////////////////////////////
+
+Table AircraftIdentity {
+
+  carrierCode varchar
+  noseNumber varchar
+
+  registration varchar
+  ATCType varchar
+  FAANavCode varchar
+  alternateFAANAVCode varchar
+  numericCode varchar
+  mnemonicFleetCode varchar
+  mnemonicTypeCode varchar
+  marketingFleetCode varchar
+  heavyInd varchar
+  LUSInd varchar
+  specialInd varchar
+
+  updateTimeStamp datetime
+  sourceTimeStamp datetime
+
+  indexes {
+    (carrierCode, noseNumber) [pk]
+  }
+}
+
+/////////////////////////////////////////////////////
+// AIRCRAFT CONFIGURATION (STATIC)
+/////////////////////////////////////////////////////
+
+Table AircraftConfiguration {
+
+  // Composite PK (same as AircraftIdentity)
+  carrierCode varchar
+  noseNumber varchar
+
+  // Configuration
+  configuration_code varchar
+  configuration_ATCType varchar
+  configuration_FAANavCode varchar
+  configuration_alternateFAANAVCode varchar
+  configuration_marketingFleetCode varchar
+  configuration_mnemonicFleetCode varchar
+  configuration_mnemonicTypeCode varchar
+  configuration_numericCode varchar
+  configuration_heavyInd varchar
+  configuration_LUSInd varchar
+  configuration_SELCAL varchar
+  configuration_specialInd varchar
+
+  // Seating capacity (embedded object)
+  cabinCapacity_cabin1 int
+  cabinCapacity_cabin2 int
+  cabinCapacity_cabin3 int
+  cabinCapacity_cabin4 int
+  cabinCapacity_cabin5 int
+
+  updateTimeStamp datetime
+  sourceTimeStamp datetime
+
+  indexes {
+    (carrierCode, noseNumber) [pk]
+  }
+}
+
+Ref: AircraftConfiguration.carrierCode > AircraftIdentity.carrierCode
+Ref: AircraftConfiguration.noseNumber > AircraftIdentity.noseNumber
+
+
+/////////////////////////////////////////////////////
+// AIRCRAFT LOCATION STATUS (DYNAMIC)
+/////////////////////////////////////////////////////
+
+Table AircraftLocationStatus {
+
+  carrierCode varchar
+  noseNumber varchar
+
+  // Location
+  location_aircraftStatus varchar
+  location_controlledRouteInd varchar
+  location_outOfServiceCode varchar
+  location_openMELitems int
+  location_openSELitems int
+
+  // lastCompletedFlight (embedded)
+  lastCompletedFlight_fltNum varchar
+  lastCompletedFlight_originDate varchar
+  lastCompletedFlight_dupArrCode varchar
+  lastCompletedFlight_arrivalTime varchar
+
+  // nextFlight (embedded)
+  nextFlight_fltNum varchar
+  nextFlight_originDate varchar
+  nextFlight_dupDepCode varchar
+
+  // plannedOverNight (embedded)
+  plannedOverNight_arrFltNum varchar
+  plannedOverNight_arrivalTime varchar
+  plannedOverNight_groundTime varchar
+  plannedOverNight_station varchar
+  plannedOverNight_returnToServiceTime varchar
+
+  updateTimeStamp datetime
+  sourceTimeStamp datetime
+
+  indexes {
+    (carrierCode, noseNumber) [pk]
+  }
+}
+
+Ref: AircraftLocationStatus.carrierCode > AircraftIdentity.carrierCode
+Ref: AircraftLocationStatus.noseNumber > AircraftIdentity.noseNumber
+
+
+/////////////////////////////////////////////////////
+// AIRCRAFT PERFORMANCE (WEIGHT + MISC)
+/////////////////////////////////////////////////////
+
+Table AircraftPerformance {
+
+  carrierCode varchar
+  noseNumber varchar
+
+  // Weight object
+  weight_emptyOperatingWeight varchar
+  weight_maximumFuelCapacity varchar
+  weight_maximumLandingWeight varchar
+  weight_maximumPayload varchar
+  weight_maximumRampWeight varchar
+  weight_maximumStructuralLandingWeight varchar
+  weight_maximumStructuralRampWeight varchar
+  weight_maximumStructuralTakeOffWeight varchar
+  weight_minimumPayload varchar
+  weight_zeroFuelWeight varchar
+
+  // WeightMisc object
+  weightMisc_capacityLifeRaftsCarried varchar
+  weightMisc_fuelFlowCorrectionFactor varchar
+  weightMisc_maximumAltitudeCorrectionFactor varchar
+  weightMisc_numberOfLifeRaftsCarried varchar
+  weightMisc_operationalEquipmentIndicators1 varchar
+  weightMisc_operationalEquipmentIndicators2 varchar
+  weightMisc_taxiFuelBurnRate varchar
+
+  updateTimeStamp datetime
+  sourceTimeStamp datetime
+
+  indexes {
+    (carrierCode, noseNumber) [pk]
+  }
+}
+
+Ref: AircraftPerformance.carrierCode > AircraftIdentity.carrierCode
+Ref: AircraftPerformance.noseNumber > AircraftIdentity.noseNumber
+
+
+/////////////////////////////////////////////////////
+// AIRCRAFT MEL ITEMS (ARRAY)
+/////////////////////////////////////////////////////
+
+Table AircraftMEL {
+
+  id int [pk, increment]
+
+  carrierCode varchar
+  noseNumber varchar
+
+  MELItem_ATASystemID varchar
+  MELItem_AMRNumber varchar
+  MELItem_subSystem varchar
+  MELItem_systemCode varchar
+  MELItem_description varchar
+  MELItem_issue_dateTime datetime
+  MELItem_issue_station varchar
+  MELItem_issue_flightNumber varchar
+  MELItem_itemPosition varchar
+  MELItem_manualReference varchar
+  MELItem_maxDays varchar
+  MELItem_MELNumber varchar
+  MELItem_positionCode varchar
+  MELItem_effectivity varchar
+  MELItem_close_dateTime datetime
+  MELItem_close_station varchar
+  MELItem_dispatcherInitials varchar
+
+  updateTimeStamp datetime
+  sourceTimeStamp datetime
+}
+
+
+/////////////////////////////////////////////////////
+// MAINTENANCE DOMAIN
+/////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////
+// MAINTENANCE RECORD (AGGREGATE ROOT)
+/////////////////////////////////////////////////////
+
+Table MaintenanceRecord {
+
+  trackingID varchar [pk]
+
+  airlineCode_iata varchar
+  airlineCode_icao varchar
+  tailNumber varchar
+  registration varchar
+  event varchar
+  schemaVersion varchar
+  fosPartition varchar
+
+  dataTime_sourceTimeStamp datetime
+  dataTime_fltHubTimeStamp datetime
+
+  updateTimeStamp datetime
+  sourceTimeStamp datetime
+}
+
+/////////////////////////////////////////////////////
+// DMI ITEMS (ARRAY OF OBJECTS)
+/////////////////////////////////////////////////////
+
+Table MaintenanceDMI {
+
+  id int [pk, increment]
+
+  trackingID varchar [ref: > MaintenanceRecord.trackingID]
+
+  dmiId_ataCode varchar
+  dmiId_controlNumber varchar
+  dmiId_dmiClass varchar
+  dmiId_eqType varchar
+  dmiId_fmrId varchar
+  dmiId_lUScode varchar
+
+  dmiData_position varchar
+  dmiData_dmiText varchar
+  dmiData_multiplier int
+  dmiData_effectiveTime datetime
+
+  eventSourceTimeStamp datetime
+  updateTimeStamp datetime
+}
+
+/////////////////////////////////////////////////////
+// EQUIPMENT INFO (1:1 WITH MAINTENANCERECORD)
+/////////////////////////////////////////////////////
+
+Table MaintenanceEquipment {
+
+  trackingID varchar [pk, ref: > MaintenanceRecord.trackingID]
+
+  equip_fleetType varchar
+  equip_typeEq varchar
+  equip_numericEqType varchar
+
+  equip_eventSourceTimeStamp datetime
+  equip_updateTimeStamp datetime
+}
+
+/////////////////////////////////////////////////////
+// LANDING DATA (1:1 WITH MAINTENANCERECORD)
+/////////////////////////////////////////////////////
+
+Table MaintenanceLandingData {
+
+  trackingID varchar [pk, ref: > MaintenanceRecord.trackingID]
+
+  ttlTime varchar
+  cycles varchar
+
+  lastFlt_fltNum varchar
+  lastFlt_date varchar
+  lastFlt_station varchar
+  lastFlt_dupCode varchar
+
+  nextFlt_fltNum varchar
+  nextFlt_date varchar
+  nextFlt_station varchar
+  nextFlt_dupCode varchar
+
+  landing_eventSourceTimeStamp datetime
+  landing_updateTimeStamp datetime
+}
+
+/////////////////////////////////////////////////////
+// OTS DATA (1:1 WITH MAINTENANCERECORD)
+/////////////////////////////////////////////////////
+
+Table MaintenanceOTS {
+
+  trackingID varchar [pk, ref: > MaintenanceRecord.trackingID]
+
+  maintHold bool
+  otsInd bool
+  otsSta varchar
+  otsTime varchar
+  bump varchar
+  reason varchar
+  location varchar
+
+  remarks_rmk varchar
+
+  ertsTime_code varchar
+  ertsTime_value varchar
+
+  nextFlt_fltNum varchar
+  nextFlt_date varchar
+  nextFlt_station varchar
+
+  ots_eventSourceTimeStamp datetime
+  ots_updateTimeStamp datetime
+}
+
+/////////////////////////////////////////////////////
+// EVENT HISTORY (ARRAY OF EVENTS)
+/////////////////////////////////////////////////////
+
+Table MaintenanceEventHistory {
+
+  id int [pk, increment]
+
+  trackingID varchar [ref: > MaintenanceRecord.trackingID]
+
+  event varchar
+  eventHistory_trackingId varchar
+  eventHistory_sourceTimeStamp datetime
+  eventHistory_fltHubTimeStamp datetime
+  eventHistory_dbUpdatedTime datetime
+}
+
+
+/////////////////////////////////////////////////////
+// ADL DOMAIN
+/////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////
+// ADL Header (ROOT ENTITY)
+/////////////////////////////////////////////////////
+
+
+Table adlHeader {
+  _id string [pk]
+  activeGdp bool
+  adlDate datetime
+  adlEndTime datetime
+  adlId_adlId string
+  adlId_employeeId string
+  adlId_runId string
+  adlId_sessionId string
+  adlId_snapshotId string
+  adlStartTime datetime
+  allArrivalsCount int
+  allDeparturesCount int
+  arrivalsCount int
+  departuresCount int
+  elementName string
+  elementType string
+  filename string
+  gdpStation string
+  publishToKafka bool
+  simulated bool
+  staleAdl bool
+  subs string
+  updateDate datetime
+}
+
+/////////////////////////////////////////////////////
+// ADL Flights
+/////////////////////////////////////////////////////
+
+Table adlFlights {
+  _id string [pk]
+  acid string
+  adlId json
+  adlId_adlId string
+  adlId_employeeId string
+  adlId_runId string
+  adlId_sessionId string
+  adlId_snapshotId string
+  airlineCode string
+  airlineICAO string
+  arrival bool
+  arrivalStation string
+  artd string
+  aslot string
+  category string
+  chkDAS bool
+  chkDO bool
+  cta string
+  ctaDate datetime
+  ctd string
+  ctdDate datetime
+  ctlelem string
+  ctltype string
+  departureStation string
+  dvrec string
+  eentry string
+  entry string
+  erta string
+  ertaDate datetime
+  ertd string
+  ertdDate datetime
+  eta string
+  etaDate datetime
+  etd string
+  etdDate datetime
+  exit string
+  flightDate string
+  flightKey string
+  flightNumber string
+  ientry string
+  igta string
+  igtaDate datetime
+  igtd string
+  igtdDate datetime
+  isArrival bool
+  legStatus string
+  lgta string
+  lgtaDate datetime
+  lgtd string
+  lgtdDate datetime
+  major string
+  originalArrivalStationCode string
+  originalDepartureStationCode string
+  pgta string
+  pgtd string
+  sgta string
+  sgtaDate datetime
+  sgtd string
+  sgtdDate datetime
+  slHold string
+  weightClass string
+}
+
+
+
+/////////////////////////////////////////////////////
+// RELATIONSHIPS
+/////////////////////////////////////////////////////
+
+
+Ref: FlightPosition.flightKey > FlightIdentity.flightKey
+Ref: EventHistory.flightKey > FlightEvent.flightKey
+Ref: StationGeo.(icaoAirportID, iataAirlineCode) > StationIdentity.(icaoAirportID, iataAirlineCode)
+Ref: StationAuthorization.(icaoAirportID, iataAirlineCode) > StationIdentity.(icaoAirportID, iataAirlineCode)
+Ref: StationMetadata.(icaoAirportID, iataAirlineCode) > StationIdentity.(icaoAirportID, iataAirlineCode)
+Ref: AircraftMEL.carrierCode > AircraftIdentity.carrierCode
+Ref: AircraftMEL.noseNumber > AircraftIdentity.noseNumber
+Ref: adlFlights.adlId_adlId > adlHeader.adlId_adlId

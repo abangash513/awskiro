@@ -1,0 +1,15 @@
+﻿
+Name          IPv4Address  Site                    OperatingSystem                        
+----          -----------  ----                    ---------------                        
+AD02          10.1.220.9   Default-First-Site-Name Windows Server 2008 R2 Datacenter      
+W09MVMPADDC01 10.1.220.20  Default-First-Site-Name Windows Server 2012 R2 Datacenter      
+W09MVMPADDC02 10.1.220.21  Default-First-Site-Name Windows Server 2016 Standard           
+WAC-DC01      10.1.220.205 Default-First-Site-Name Windows Server 2022 Datacenter         
+AD01          10.1.220.8   Default-First-Site-Name Windows Server 2008 R2 Datacenter      
+WAC-DC02      10.1.220.206 Default-First-Site-Name Windows Server 2022 Datacenter         
+WACHFDC01     10.1.220.5   Default-First-Site-Name Windows Server 2019 Standard Evaluation
+WACPRODDC01   10.70.10.10  Default-First-Site-Name Windows Server 2019 Datacenter         
+WACHFDC02     10.1.220.6   Default-First-Site-Name Windows Server 2019 Standard Evaluation
+WACPRODDC02   10.70.11.10  Default-First-Site-Name Windows Server 2019 Datacenter         
+
+

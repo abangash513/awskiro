@@ -1,0 +1,142 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "WACPRODDC02 - Second PROD Domain Controller in Prod-VPC (10.70.0.0/16). Windows Server 2019, NO AUTOMATIC PROMOTION.",
+  "Parameters": {
+    "VpcId": {
+      "Type": "AWS::EC2::VPC::Id",
+      "Description": "PROD VPC where the DC will live.",
+      "Default": "vpc-014b66d7ca2309134"
+    },
+    "SubnetIdAD": {
+      "Type": "AWS::EC2::Subnet::Id",
+      "Description": "PROD AD subnet for WACPRODDC02 (MAD-2b).",
+      "Default": "subnet-0c6eec3752dd3e665"
+    },
+    "AmiId": {
+      "Type": "AWS::EC2::Image::Id",
+      "Description": "Windows Server 2019 AMI for production.",
+      "Default": "ami-0948bfde6d7c1b495"
+    },
+    "InstanceType": {
+      "Type": "String",
+      "Default": "m5.large",
+      "AllowedValues": ["t3.large", "m5.large", "m5.xlarge", "r5.large", "r5.xlarge"],
+      "Description": "EC2 instance type for the DC."
+    },
+    "KeyName": {
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Description": "EC2 key pair for RDP access.",
+      "Default": "AWSProdKey"
+    },
+    "SecurityGroupId": {
+      "Type": "AWS::EC2::SecurityGroup::Id",
+      "Description": "Security Group ID for the DC instance.",
+      "Default": "sg-0b0bd0839e63d3075"
+    },
+    "IamInstanceProfileName": {
+      "Type": "String",
+      "Description": "IAM Instance Profile for SSM and AWS access.",
+      "Default": "WAC-Prod-ADMT-Enhanced-Profile"
+    },
+    "ComputerName": {
+      "Type": "String",
+      "Default": "WACPRODDC02",
+      "Description": "Windows hostname for the instance."
+    },
+    "DomainName": {
+      "Type": "String",
+      "Default": "wac.net",
+      "Description": "AD domain name."
+    },
+    "OnPremDns1": {
+      "Type": "String",
+      "Default": "10.1.220.5",
+      "Description": "Primary on-prem DC/DNS (WACHFDC01)."
+    },
+    "OnPremDns2": {
+      "Type": "String",
+      "Default": "10.1.220.6",
+      "Description": "Secondary on-prem DC/DNS (WACHFDC02)."
+    },
+    "StaticPrivateIp": {
+      "Type": "String",
+      "Default": "10.70.11.10",
+      "Description": "Static private IP for WACPRODDC02."
+    },
+    "RootVolumeSizeGiB": {
+      "Type": "Number",
+      "Default": 100,
+      "MinValue": 80,
+      "MaxValue": 1024,
+      "Description": "C: drive size in GiB."
+    },
+    "EnvironmentTag": {
+      "Type": "String",
+      "Default": "PROD",
+      "Description": "Environment tag value."
+    },
+    "ProjectTag": {
+      "Type": "String",
+      "Default": "WAC-AD-Migration",
+      "Description": "Project tag value."
+    }
+  },
+  "Resources": {
+    "WACPRODDC02Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": {"Ref": "AmiId"},
+        "InstanceType": {"Ref": "InstanceType"},
+        "SubnetId": {"Ref": "SubnetIdAD"},
+        "PrivateIpAddress": {"Ref": "StaticPrivateIp"},
+        "KeyName": {"Ref": "KeyName"},
+        "IamInstanceProfile": {"Ref": "IamInstanceProfileName"},
+        "SecurityGroupIds": [{"Ref": "SecurityGroupId"}],
+        "DisableApiTermination": true,
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "VolumeSize": {"Ref": "RootVolumeSizeGiB"},
+              "VolumeType": "gp3",
+              "DeleteOnTermination": false,
+              "Encrypted": true
+            }
+          }
+        ],
+        "Tags": [
+          {"Key": "Name", "Value": {"Ref": "ComputerName"}},
+          {"Key": "Role", "Value": "DomainController"},
+          {"Key": "Environment", "Value": {"Ref": "EnvironmentTag"}},
+          {"Key": "Project", "Value": {"Ref": "ProjectTag"}},
+          {"Key": "Backup", "Value": "Required"}
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": "<powershell>\n$ErrorActionPreference = 'Stop'\n$setupRoot = 'C:\\Setup'\n$logRoot = 'C:\\Setup\\Logs'\nNew-Item -Path $setupRoot -ItemType Directory -Force | Out-Null\nNew-Item -Path $logRoot -ItemType Directory -Force | Out-Null\n$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'\n$logFile = Join-Path $logRoot \"WACPRODDC02-Build-$timestamp.log\"\nStart-Transcript -Path $logFile -Force\nWrite-Host '=== WACPRODDC02 BUILD START ===' -ForegroundColor Green\nWrite-Host \"Timestamp: $timestamp\"\nWrite-Host \"Computer Name: ${ComputerName}\"\nWrite-Host \"Domain: ${DomainName}\"\ntry {\n  $currentName = (Get-WmiObject Win32_ComputerSystem).Name\n  if ($currentName -ne '${ComputerName}') {\n    Write-Host \"Renaming computer from $currentName to ${ComputerName}...\" -ForegroundColor Yellow\n    Rename-Computer -NewName '${ComputerName}' -Force -PassThru\n    Write-Host 'Rename scheduled. Will take effect after reboot.' -ForegroundColor Green\n  } else {\n    Write-Host 'Computer already named ${ComputerName}' -ForegroundColor Green\n  }\n} catch {\n  Write-Warning \"Failed to rename computer: $($_.Exception.Message)\"\n}\ntry {\n  Write-Host \"Configuring DNS client to point to ${OnPremDns1} and ${OnPremDns2}...\" -ForegroundColor Yellow\n  $adapter = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1\n  if ($null -eq $adapter) { throw 'No active network adapter found.' }\n  $ifIndex = $adapter.ifIndex\n  Set-DnsClientServerAddress -InterfaceIndex $ifIndex -ServerAddresses @('${OnPremDns1}', '${OnPremDns2}')\n  Write-Host \"DNS client updated on adapter $($adapter.Name)\" -ForegroundColor Green\n  Write-Host 'Testing DNS resolution...' -ForegroundColor Yellow\n  $dnsTest = Resolve-DnsName -Name '${DomainName}' -Server '${OnPremDns1}' -ErrorAction SilentlyContinue\n  if ($dnsTest) {\n    Write-Host 'DNS resolution successful for ${DomainName}' -ForegroundColor Green\n  } else {\n    Write-Warning 'DNS resolution test failed - verify VPN connectivity'\n  }\n} catch {\n  Write-Warning \"Failed to update DNS client addresses: $($_.Exception.Message)\"\n}\ntry {\n  Write-Host 'Installing Active Directory Domain Services and management tools...' -ForegroundColor Yellow\n  $features = Install-WindowsFeature AD-Domain-Services,RSAT-AD-PowerShell,RSAT-AD-AdminCenter,RSAT-DNS-Server,GPMC -IncludeManagementTools\n  if ($features.Success) {\n    Write-Host 'AD DS + tools installation complete.' -ForegroundColor Green\n  } else {\n    Write-Warning 'AD DS installation completed with warnings'\n  }\n} catch {\n  Write-Warning \"Failed to install AD DS / tools: $($_.Exception.Message)\"\n}\ntry {\n  Write-Host 'Installing AWS CLI v2...' -ForegroundColor Yellow\n  $awsCliMsi = Join-Path $setupRoot 'AWSCLIV2.msi'\n  Invoke-WebRequest -Uri 'https://awscli.amazonaws.com/AWSCLIV2.msi' -OutFile $awsCliMsi -UseBasicParsing\n  Start-Process 'msiexec.exe' -ArgumentList \"/i `\"$awsCliMsi`\" /qn\" -Wait\n  $awsCliPath = 'C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe'\n  if (Test-Path $awsCliPath) {\n    Write-Host \"AWS CLI v2 installed at $awsCliPath\" -ForegroundColor Green\n  } else {\n    Write-Warning 'AWS CLI v2 installation completed but aws.exe not found at expected path.'\n  }\n} catch {\n  Write-Warning \"Failed to install AWS CLI v2: $($_.Exception.Message)\"\n}\n$statusFile = Join-Path $setupRoot 'build-status.txt'\n\"Build Status: COMPLETE`nTimestamp: $timestamp`nComputer Name: ${ComputerName}`nDomain: ${DomainName}`nDNS Servers: ${OnPremDns1}, ${OnPremDns2}`nNext Step: MANUAL DC PROMOTION REQUIRED\" | Out-File -FilePath $statusFile -Force\nWrite-Host '=== WACPRODDC02 BUILD COMPLETE - REBOOTING ===' -ForegroundColor Green\nWrite-Host \"Status file created at: $statusFile\" -ForegroundColor Cyan\nWrite-Host \"Log file: $logFile\" -ForegroundColor Cyan\nStop-Transcript\nRestart-Computer -Force\n</powershell>"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "InstanceId": {
+      "Description": "EC2 Instance ID of WACPRODDC02",
+      "Value": {"Ref": "WACPRODDC02Instance"},
+      "Export": {"Name": "WACPRODDC02-InstanceId"}
+    },
+    "PrivateIp": {
+      "Description": "Private IP address of WACPRODDC02",
+      "Value": {"Fn::GetAtt": ["WACPRODDC02Instance", "PrivateIp"]},
+      "Export": {"Name": "WACPRODDC02-PrivateIp"}
+    },
+    "ComputerNameOut": {
+      "Description": "Windows computer name used",
+      "Value": {"Ref": "ComputerName"}
+    },
+    "AvailabilityZone": {
+      "Description": "Availability Zone of WACPRODDC02",
+      "Value": {"Fn::GetAtt": ["WACPRODDC02Instance", "AvailabilityZone"]}
+    }
+  }
+}

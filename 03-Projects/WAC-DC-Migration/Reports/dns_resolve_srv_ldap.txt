@@ -1,0 +1,25 @@
+﻿
+Name                                     Type   TTL   Section    NameTarget                     Priority Weight Port
+----                                     ----   ---   -------    ----------                     -------- ------ ----
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     ad02.wac.net                   0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     w09mvmpaddc01.wac.net          0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     ad01.wac.net                   0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     w09mvmpaddc02.wac.net          0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     AD02.WAC.NET                   0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     wacproddc02.wac.net            0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     wacproddc01.wac.net            0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     wac-dc01.wac.net               0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     wac-dc02.wac.net               0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     W09MVMPADDC01.WAC.NET          0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     wachfdc02.wac.net              0        100    389 
+_ldap._tcp.dc._msdcs.wac.net             SRV    600   Answer     wachfdc01.wac.net              0        100    389 
+
+Name       : ad02.wac.net
+QueryType  : A
+TTL        : 3600
+Section    : Additional
+IP4Address : 10.1.220.9
+
+
+
+

@@ -1,0 +1,377 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'HRI Fast Scanner - Member Account Stack - Deploys cross-account IAM role for scanning'
+
+Parameters:
+  ManagementAccountId:
+    Type: String
+    Description: 'AWS Account ID of the management account running HRI Scanner'
+    AllowedPattern: '^\d{12}$'
+    ConstraintDescription: 'Must be a valid 12-digit AWS account ID'
+  
+  ScannerRoleName:
+    Type: String
+    Default: 'HRI-ScannerRole'
+    Description: 'Name of the cross-account IAM role'
+  
+  ExternalId:
+    Type: String
+    Default: 'hri-scanner-external-id-12345'
+    Description: 'External ID for additional security (should match management account configuration)'
+    MinLength: 8
+
+Resources:
+  # ============================================================================
+  # Cross-Account Scanner Role
+  # ============================================================================
+  HRIScannerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref ScannerRoleName
+      Description: 'Read-only role for HRI Fast Scanner to scan AWS resources'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${ManagementAccountId}:root'
+            Action: 'sts:AssumeRole'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ExternalId
+      MaxSessionDuration: 3600
+      Policies:
+        - PolicyName: HRIScannerReadOnlyPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # ============================================================
+              # S3 Permissions
+              # ============================================================
+              - Sid: S3ReadAccess
+                Effect: Allow
+                Action:
+                  - 's3:GetBucketPublicAccessBlock'
+                  - 's3:GetBucketAcl'
+                  - 's3:GetBucketPolicy'
+                  - 's3:GetBucketPolicyStatus'
+                  - 's3:ListAllMyBuckets'
+                  - 's3:GetEncryptionConfiguration'
+                  - 's3:GetBucketVersioning'
+                  - 's3:GetBucketLogging'
+                Resource: '*'
+              
+              # ============================================================
+              # EC2 Permissions
+              # ============================================================
+              - Sid: EC2ReadAccess
+                Effect: Allow
+                Action:
+                  - 'ec2:DescribeVolumes'
+                  - 'ec2:DescribeInstances'
+                  - 'ec2:DescribeVpcs'
+                  - 'ec2:DescribeFlowLogs'
+                  - 'ec2:DescribeAddresses'
+                  - 'ec2:DescribeSnapshots'
+                  - 'ec2:DescribeImages'
+                  - 'ec2:DescribeSecurityGroups'
+                  - 'ec2:DescribeNetworkInterfaces'
+                  - 'ec2:DescribeSubnets'
+                  - 'ec2:DescribeRouteTables'
+                  - 'ec2:DescribeVpcEndpoints'
+                Resource: '*'
+              
+              # ============================================================
+              # RDS Permissions
+              # ============================================================
+              - Sid: RDSReadAccess
+                Effect: Allow
+                Action:
+                  - 'rds:DescribeDBInstances'
+                  - 'rds:DescribeDBClusters'
+                  - 'rds:DescribeDBSnapshots'
+                  - 'rds:DescribeDBClusterSnapshots'
+                  - 'rds:DescribeDBParameterGroups'
+                  - 'rds:DescribeDBSubnetGroups'
+                  - 'rds:ListTagsForResource'
+                Resource: '*'
+              
+              # ============================================================
+              # IAM Permissions
+              # ============================================================
+              - Sid: IAMReadAccess
+                Effect: Allow
+                Action:
+                  - 'iam:GetAccountSummary'
+                  - 'iam:ListUsers'
+                  - 'iam:ListAccessKeys'
+                  - 'iam:GetAccountPasswordPolicy'
+                  - 'iam:GetCredentialReport'
+                  - 'iam:GenerateCredentialReport'
+                  - 'iam:ListMFADevices'
+                  - 'iam:ListUserPolicies'
+                  - 'iam:ListAttachedUserPolicies'
+                  - 'iam:GetUser'
+                  - 'iam:GetLoginProfile'
+                Resource: '*'
+              
+              # ============================================================
+              # Security Hub Permissions
+              # ============================================================
+              - Sid: SecurityHubReadAccess
+                Effect: Allow
+                Action:
+                  - 'securityhub:GetFindings'
+                  - 'securityhub:DescribeHub'
+                  - 'securityhub:GetEnabledStandards'
+                  - 'securityhub:BatchImportFindings'
+                  - 'securityhub:GetInsights'
+                Resource: '*'
+              
+              # ============================================================
+              # AWS Config Permissions
+              # ============================================================
+              - Sid: ConfigReadAccess
+                Effect: Allow
+                Action:
+                  - 'config:DescribeConfigurationRecorders'
+                  - 'config:DescribeDeliveryChannels'
+                  - 'config:DescribeConfigurationRecorderStatus'
+                  - 'config:DescribeDeliveryChannelStatus'
+                  - 'config:GetComplianceDetailsByConfigRule'
+                  - 'config:DescribeComplianceByConfigRule'
+                Resource: '*'
+              
+              # ============================================================
+              # CloudWatch Permissions
+              # ============================================================
+              - Sid: CloudWatchReadAccess
+                Effect: Allow
+                Action:
+                  - 'cloudwatch:DescribeAlarms'
+                  - 'cloudwatch:GetMetricStatistics'
+                  - 'cloudwatch:ListMetrics'
+                  - 'cloudwatch:DescribeAlarmsForMetric'
+                Resource: '*'
+              
+              # ============================================================
+              # GuardDuty Permissions
+              # ============================================================
+              - Sid: GuardDutyReadAccess
+                Effect: Allow
+                Action:
+                  - 'guardduty:ListDetectors'
+                  - 'guardduty:GetDetector'
+                  - 'guardduty:ListFindings'
+                  - 'guardduty:GetFindings'
+                Resource: '*'
+              
+              # ============================================================
+              # CloudTrail Permissions
+              # ============================================================
+              - Sid: CloudTrailReadAccess
+                Effect: Allow
+                Action:
+                  - 'cloudtrail:DescribeTrails'
+                  - 'cloudtrail:GetTrailStatus'
+                  - 'cloudtrail:GetEventSelectors'
+                  - 'cloudtrail:LookupEvents'
+                Resource: '*'
+              
+              # ============================================================
+              # Cost Explorer Permissions
+              # ============================================================
+              - Sid: CostExplorerReadAccess
+                Effect: Allow
+                Action:
+                  - 'ce:GetCostAndUsage'
+                  - 'ce:GetSavingsPlansUtilizationDetails'
+                  - 'ce:GetReservationUtilization'
+                  - 'ce:GetSavingsPlansCoverage'
+                  - 'ce:GetReservationCoverage'
+                  - 'ce:GetRightsizingRecommendation'
+                Resource: '*'
+              
+              # ============================================================
+              # Compute Optimizer Permissions
+              # ============================================================
+              - Sid: ComputeOptimizerReadAccess
+                Effect: Allow
+                Action:
+                  - 'compute-optimizer:GetEC2InstanceRecommendations'
+                  - 'compute-optimizer:GetLambdaFunctionRecommendations'
+                  - 'compute-optimizer:GetEBSVolumeRecommendations'
+                  - 'compute-optimizer:GetAutoScalingGroupRecommendations'
+                  - 'compute-optimizer:GetEnrollmentStatus'
+                Resource: '*'
+              
+              # ============================================================
+              # AWS Backup Permissions
+              # ============================================================
+              - Sid: BackupReadAccess
+                Effect: Allow
+                Action:
+                  - 'backup:ListBackupPlans'
+                  - 'backup:ListProtectedResources'
+                  - 'backup:DescribeBackupVault'
+                  - 'backup:ListBackupVaults'
+                  - 'backup:GetBackupPlan'
+                Resource: '*'
+              
+              # ============================================================
+              # Auto Scaling Permissions
+              # ============================================================
+              - Sid: AutoScalingReadAccess
+                Effect: Allow
+                Action:
+                  - 'autoscaling:DescribeAutoScalingGroups'
+                  - 'autoscaling:DescribePolicies'
+                  - 'autoscaling:DescribeScalingActivities'
+                  - 'autoscaling:DescribeLaunchConfigurations'
+                  - 'autoscaling:DescribeLifecycleHooks'
+                Resource: '*'
+              
+              # ============================================================
+              # Elastic Load Balancing Permissions
+              # ============================================================
+              - Sid: ELBReadAccess
+                Effect: Allow
+                Action:
+                  - 'elasticloadbalancing:DescribeLoadBalancers'
+                  - 'elasticloadbalancing:DescribeTargetHealth'
+                  - 'elasticloadbalancing:DescribeTargetGroups'
+                  - 'elasticloadbalancing:DescribeListeners'
+                  - 'elasticloadbalancing:DescribeRules'
+                  - 'elasticloadbalancing:DescribeTags'
+                Resource: '*'
+              
+              # ============================================================
+              # Lambda Permissions
+              # ============================================================
+              - Sid: LambdaReadAccess
+                Effect: Allow
+                Action:
+                  - 'lambda:ListFunctions'
+                  - 'lambda:GetFunction'
+                  - 'lambda:GetFunctionConfiguration'
+                  - 'lambda:ListTags'
+                  - 'lambda:GetPolicy'
+                Resource: '*'
+              
+              # ============================================================
+              # KMS Permissions
+              # ============================================================
+              - Sid: KMSReadAccess
+                Effect: Allow
+                Action:
+                  - 'kms:ListKeys'
+                  - 'kms:DescribeKey'
+                  - 'kms:GetKeyPolicy'
+                  - 'kms:GetKeyRotationStatus'
+                  - 'kms:ListAliases'
+                  - 'kms:ListResourceTags'
+                Resource: '*'
+              
+              # ============================================================
+              # VPC Permissions
+              # ============================================================
+              - Sid: VPCReadAccess
+                Effect: Allow
+                Action:
+                  - 'ec2:DescribeVpcs'
+                  - 'ec2:DescribeSubnets'
+                  - 'ec2:DescribeRouteTables'
+                  - 'ec2:DescribeNetworkAcls'
+                  - 'ec2:DescribeVpcPeeringConnections'
+                  - 'ec2:DescribeNatGateways'
+                  - 'ec2:DescribeInternetGateways'
+                  - 'ec2:DescribeVpnGateways'
+                  - 'ec2:DescribeVpnConnections'
+                Resource: '*'
+              
+              # ============================================================
+              # S3 Control Permissions (for account-level settings)
+              # ============================================================
+              - Sid: S3ControlReadAccess
+                Effect: Allow
+                Action:
+                  - 's3:GetAccountPublicAccessBlock'
+                Resource: '*'
+              
+              # ============================================================
+              # Trusted Advisor Permissions
+              # ============================================================
+              - Sid: TrustedAdvisorReadAccess
+                Effect: Allow
+                Action:
+                  - 'support:DescribeTrustedAdvisorChecks'
+                  - 'support:DescribeTrustedAdvisorCheckResult'
+                  - 'support:DescribeTrustedAdvisorCheckSummaries'
+                  - 'support:RefreshTrustedAdvisorCheck'
+                Resource: '*'
+              
+              # ============================================================
+              # Tag Permissions
+              # ============================================================
+              - Sid: TagReadAccess
+                Effect: Allow
+                Action:
+                  - 'tag:GetResources'
+                  - 'tag:GetTagKeys'
+                  - 'tag:GetTagValues'
+                Resource: '*'
+              
+              # ============================================================
+              # Explicit Deny for Write Operations
+              # ============================================================
+              - Sid: DenyWriteOperations
+                Effect: Deny
+                Action:
+                  - '*:Create*'
+                  - '*:Delete*'
+                  - '*:Update*'
+                  - '*:Put*'
+                  - '*:Modify*'
+                  - '*:Set*'
+                  - '*:Add*'
+                  - '*:Remove*'
+                  - '*:Attach*'
+                  - '*:Detach*'
+                  - '*:Enable*'
+                  - '*:Disable*'
+                  - '*:Start*'
+                  - '*:Stop*'
+                  - '*:Terminate*'
+                  - '*:Reboot*'
+                Resource: '*'
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: IAM
+        - Key: ManagedBy
+          Value: CloudFormation
+
+Outputs:
+  HRIScannerRoleArn:
+    Description: ARN of the HRI Scanner cross-account role
+    Value: !GetAtt HRIScannerRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-ScannerRoleArn'
+
+  HRIScannerRoleName:
+    Description: Name of the HRI Scanner cross-account role
+    Value: !Ref HRIScannerRole
+    Export:
+      Name: !Sub '${AWS::StackName}-ScannerRoleName'
+
+  ManagementAccountId:
+    Description: Management account ID that can assume this role
+    Value: !Ref ManagementAccountId
+    Export:
+      Name: !Sub '${AWS::StackName}-ManagementAccountId'
+
+  ExternalId:
+    Description: External ID used for role assumption
+    Value: !Ref ExternalId
+    Export:
+      Name: !Sub '${AWS::StackName}-ExternalId'

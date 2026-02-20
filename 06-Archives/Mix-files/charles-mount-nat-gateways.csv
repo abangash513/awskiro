@@ -1,0 +1,6 @@
+"Region","NatGatewayId","State","VpcId","SubnetId","CreateTime"
+"us-east-1","nat-0f315290c0b5fac15","available","vpc-239a0f46","subnet-cea014b9","2017-10-01T15:40:44+00:00"
+"us-east-1","nat-0ae471381d9da7b89","available","vpc-5f9a0f3a","subnet-74ac1803","2017-09-21T18:56:42+00:00"
+"us-east-1","nat-0570015d4e662b16d","available","vpc-239a0f46","subnet-9f21bca5","2017-09-22T21:13:56+00:00"
+"us-east-2","nat-05daac1d41d7643c2","available","vpc-0a17197329c88d13b","subnet-01e9e2c7d87402de5","2022-09-21T17:09:20+00:00"
+"us-east-2","nat-068b7cb47c7b27347","available","vpc-0ebbfc74c22816763","subnet-09e1d2ddc9b00fbc4","2022-09-21T17:09:20+00:00"

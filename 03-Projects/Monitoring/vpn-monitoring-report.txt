@@ -1,0 +1,120 @@
+╔════════════════════════════════════════════════════════════════╗
+║          WAC PRODUCTION VPN MONITORING - STATUS REPORT        ║
+╚════════════════════════════════════════════════════════════════╝
+
+📅 Report Date: January 23, 2025
+🔐 AWS Account: 466090007609
+🌎 Region: us-west-2
+🔗 VPN Connection: Prod-VPN-Meraki-Static
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔌 VPN CONNECTION STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VPN ID: vpn-025a12d4214e767b7
+Connection State: AVAILABLE
+Type: Site-to-Site VPN
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔀 TUNNEL STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tunnel 1:
+  IP Address: 44.252.167.140
+  Status: ✅ UP
+  
+Tunnel 2:
+  IP Address: 52.24.69.66
+  Status: 🔴 DOWN
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔔 CLOUDWATCH ALARMS (4 Active)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. VPN-Prod-Tunnel1-Down
+   Monitors: Tunnel 1 state
+   Status: OK
+
+2. VPN-Prod-Tunnel2-Down
+   Monitors: Tunnel 2 state
+   Status: ALARM (Tunnel is DOWN)
+
+3. VPN-Prod-Tunnel1-LowTraffic
+   Monitors: Data volume (low threshold)
+   Threshold: <1000 bytes per 5 min
+   Status: OK
+
+4. VPN-Prod-Tunnel1-HighTraffic
+   Monitors: Data volume (high threshold)
+   Threshold: >100MB per 5 min
+   Status: OK
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔄 AUTO-RESET CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Auto-Reset: ENABLED
+Max Retry Attempts: 3
+Retry Interval: 3 minutes
+Total Reset Window: 9 minutes
+
+When tunnel goes down:
+  1. Attempt 1: Reset VPN, wait 3 min
+  2. Attempt 2: Reset VPN, wait 3 min
+  3. Attempt 3: Reset VPN, wait 3 min
+  4. If still down: Send CRITICAL alert
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 TRAFFIC MONITORING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Metrics Collected:
+  • TunnelDataIn (bytes received)
+  • TunnelDataOut (bytes sent)
+  • TunnelState (0=DOWN, 1=UP)
+
+Alert Thresholds:
+  🔴 Low Traffic: <1KB per 5 minutes
+  🔴 High Traffic: >100MB per 5 minutes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📧 ALERT RECIPIENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • abangash@aimconsulting.com
+  • bgoggins@wac.net
+  • MPruitt@aimconsulting.com
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  ALERT TRIGGERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You will receive alerts when:
+  🔴 VPN tunnel goes DOWN
+  🔴 Auto-reset attempts in progress
+  ✅ Tunnel restored after auto-reset
+  🔴 CRITICAL: Tunnel still down after 3 reset attempts
+  🔴 Traffic volume below threshold (possible issue)
+  🔴 Traffic volume above threshold (possible attack/issue)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VPN Connection: ✅ AVAILABLE
+Tunnel 1: ✅ UP
+Tunnel 2: 🔴 DOWN (1 of 2 tunnels operational)
+CloudWatch Alarms: ✅ ACTIVE (4 alarms)
+Auto-Reset: ✅ CONFIGURED
+Traffic Monitoring: ✅ ACTIVE
+Alert Notifications: ✅ CONFIGURED
+
+⚠️  NOTE: Tunnel 2 is currently DOWN. This is a test report.
+In production, auto-reset would attempt to restore the tunnel.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This is an automated VPN monitoring report.
+For questions, contact: Arif Bangash (abangash@aimconsulting.com)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

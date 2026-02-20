@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create cross-account role in child accounts for SSO access from management account'
+
+Parameters:
+  ManagementAccountId:
+    Type: String
+    Default: '729265419250'
+    Description: 'AWS Account ID of the management account'
+  
+  SSORoleName:
+    Type: String
+    Default: 'AWSReservedSSO_AIM-WellArchitectedReview_ffafce28ad424f54'
+    Description: 'Name of the SSO role to create in child accounts'
+  
+  SSOProviderArn:
+    Type: String
+    Default: 'arn:aws:iam::729265419250:saml-provider/AWSSSO_db6c0d50bf5bdbae_DO_NOT_DELETE'
+    Description: 'ARN of the SSO SAML provider in management account'
+
+Resources:
+  CrossAccountRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref SSORoleName
+      Description: 'Cross-account role for SSO access from management account'
+      MaxSessionDuration: 43200  # 12 hours
+      Path: '/aws-reserved/sso.amazonaws.com/us-west-2/'
+      
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Allow SSO to assume this role
+          - Sid: 'AllowSSOAssumeRole'
+            Effect: 'Allow'
+            Principal:
+              Federated: !Ref SSOProviderArn
+            Action:
+              - 'sts:AssumeRoleWithSAML'
+              - 'sts:TagSession'
+            Condition:
+              StringEquals:
+                'SAML:aud': 'https://signin.aws.amazon.com/saml'
+          
+          # Allow management account to assume this role
+          - Sid: 'AllowManagementAccountAssumeRole'
+            Effect: 'Allow'
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${ManagementAccountId}:root'
+            Action:
+              - 'sts:AssumeRole'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ManagementAccountId
+      
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/WellArchitectedConsoleFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/ComputeOptimizerReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AWSBillingConductorReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AWSBillingReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AmazonOpenSearchServiceReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AmazonOpenSearchIngestionReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AWSTrustedAdvisorPriorityReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/CostOptimizationHubReadOnlyAccess'
+      
+      Tags:
+        - Key: 'Purpose'
+          Value: 'Cross-Account SSO Access'
+        - Key: 'ManagedBy'
+          Value: 'CloudFormation'
+        - Key: 'ManagementAccount'
+          Value: !Ref ManagementAccountId
+
+Outputs:
+  RoleArn:
+    Description: 'ARN of the created cross-account role'
+    Value: !GetAtt CrossAccountRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'
+  
+  RoleName:
+    Description: 'Name of the created role'
+    Value: !Ref CrossAccountRole
+  
+  AccountId:
+    Description: 'Account ID where this role was created'
+    Value: !Ref 'AWS::AccountId'

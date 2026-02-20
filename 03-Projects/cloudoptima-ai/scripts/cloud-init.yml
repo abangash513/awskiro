@@ -1,0 +1,51 @@
+#cloud-config
+# Cloud-init configuration for CloudOptima AI VM
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - docker.io
+  - python3.11
+  - python3.11-venv
+  - python3-pip
+  - postgresql-client
+  - git
+  - curl
+  - htop
+
+write_files:
+  - path: /etc/environment
+    content: |
+      DATABASE_URL=postgresql+asyncpg://${db_user}:${db_password}@${db_host}:5432/${db_name}?sslmode=require
+      REDIS_URL=${redis_url}
+      SECRET_KEY=${secret_key}
+      AZURE_TENANT_ID=${azure_tenant_id}
+      AZURE_CLIENT_ID=${azure_client_id}
+      AZURE_CLIENT_SECRET=${azure_client_secret}
+      APP_ENV=production
+    append: true
+
+  - path: /tmp/setup-complete.txt
+    content: |
+      Cloud-init completed successfully
+      Next steps:
+      1. Clone repository
+      2. Install Python dependencies
+      3. Set up systemd services
+      4. Start Redis container
+      5. Run database migrations
+
+runcmd:
+  - systemctl enable docker
+  - systemctl start docker
+  - usermod -aG docker azureuser
+  - echo "vm.swappiness=10" >> /etc/sysctl.conf
+  - fallocate -l 2G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo "/swapfile none swap sw 0 0" >> /etc/fstab
+  - sysctl -p
+
+final_message: "CloudOptima AI VM setup complete. SSH in and run setup scripts."

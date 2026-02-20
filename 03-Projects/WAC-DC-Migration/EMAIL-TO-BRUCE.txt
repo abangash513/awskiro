@@ -1,0 +1,26 @@
+Subject: AD Migration to AWS Complete - On-Prem DCs Ready for Decommission
+
+Hi Bruce,
+
+The Active Directory migration to AWS is complete. All FSMO roles have been successfully transferred from the on-premises domain controllers to AWS.
+
+Current State:
+- WACPRODDC01 (AWS) is now the primary domain controller holding PDC Emulator, Schema Master, and Domain Naming Master roles
+- WACPRODDC02 (AWS) holds RID Master and Infrastructure Master roles
+- AD01 and AD02 (on-prem) now hold zero FSMO roles and are ready for decommissioning
+
+Validation Results:
+- AD replication is healthy across all DCs
+- Authentication is working properly
+- DNS resolution confirmed
+- No critical errors in event logs
+
+We encountered one issue during the migration - WACPRODDC02 couldn't be reached initially due to an AWS security group configuration that was too restrictive. This was identified and fixed by updating the security group to allow the required port (9389) from all WAC subnets.
+
+Next Steps:
+We'll schedule the decommissioning of AD01 and AD02 for next week (week of February 17). This will involve gracefully demoting both servers, removing them from the domain, and powering them off.
+
+The domain is fully operational on AWS infrastructure. Let me know if you have any questions or concerns.
+
+Thanks,
+Arif

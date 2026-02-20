@@ -1,0 +1,5 @@
+"Region","DomainName","InstanceType","InstanceCount","StorageSize","EngineVersion"
+"us-east-1","onehub-search-production","m4.2xlarge.search","2","1536","Elasticsearch_7.4"
+"us-east-1","opensearch-13-staging","r6g.large.search","3","50","OpenSearch_1.3"
+"us-east-1","search-staging","m4.large.search","2","50","Elasticsearch_7.4"
+"us-east-2","stagingdev-opensearch","r6g.large.search","1","100","OpenSearch_1.3"

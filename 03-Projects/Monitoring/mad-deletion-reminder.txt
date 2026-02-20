@@ -1,0 +1,97 @@
+╔════════════════════════════════════════════════════════════════╗
+║     AWS MANAGED AD DELETION REMINDER - ACTION REQUIRED        ║
+╚════════════════════════════════════════════════════════════════╝
+
+📅 Reminder Date: November 24, 2025
+⏰ Scheduled Deletion Date: December 24, 2025 (30 days)
+🔐 AWS Account: 749006369142 (WACDEV)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  SCHEDULED FOR DELETION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AWS DEV Managed AD:
+  Directory ID: d-9267e2fe02
+  Name: adawd1.wac.net
+  Type: Microsoft AD Standard Edition
+  Size: Small
+  Current Status: ACTIVE
+  Monthly Cost: ~$146.00
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 DELETION CHECKLIST (Complete before December 24, 2025)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before deleting the Managed AD, ensure:
+
+  ☐ Backup any critical AD data or configurations
+  ☐ Document all AD users, groups, and OUs
+  ☐ Unjoin all EC2 instances from the domain
+  ☐ Remove any application integrations
+  ☐ Update DNS configurations if needed
+  ☐ Notify all stakeholders of the deletion
+  ☐ Verify no production dependencies exist
+  ☐ Export any required logs or audit data
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴 DELETION INSTRUCTIONS (Run on December 24, 2025)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+To delete the AWS Managed AD, run:
+
+aws ds delete-directory \
+  --directory-id d-9267e2fe02 \
+  --profile WACDEV \
+  --region us-west-2
+
+⚠️  WARNING: This action is PERMANENT and CANNOT be undone!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💰 COST SAVINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After deletion, you will save:
+  Monthly: ~$146.00
+  Annually: ~$1,752.00
+
+Deletion will stop all charges immediately.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📧 REMINDER SCHEDULE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You will receive reminder emails:
+  • 2 weeks before: December 10, 2025
+  • 1 week before: December 17, 2025
+  • 1 day before: December 23, 2025
+  • Deletion day: December 24, 2025
+
+Note: Set calendar reminders as AWS does not auto-delete.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ℹ️  IMPORTANT NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• AWS Managed AD cannot be "stopped" - only deleted
+• Deletion is permanent and irreversible
+• All AD data will be lost (users, groups, computers, GPOs)
+• Domain-joined resources will lose authentication
+• DNS entries will be removed
+• No automatic backups are retained after deletion
+
+If you need to keep the directory, ignore this reminder and
+the directory will continue running.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📞 CONTACT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For questions or to cancel this deletion:
+Contact: Arif Bangash (abangash@aimconsulting.com)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This is an automated reminder.
+Please add this to your calendar and task management system.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
