@@ -1,0 +1,48 @@
+#cloud-config
+# Cloud-init configuration for CloudOptima AI VM-Only Deployment
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - docker.io
+  - docker-compose
+  - git
+  - curl
+  - htop
+
+write_files:
+  - path: /etc/environment
+    content: |
+      REDIS_URL=${redis_url}
+      SECRET_KEY=${secret_key}
+      AZURE_TENANT_ID=${azure_tenant_id}
+      AZURE_CLIENT_ID=${azure_client_id}
+      AZURE_CLIENT_SECRET=${azure_client_secret}
+      APP_ENV=production
+    append: true
+
+  - path: /tmp/setup-complete.txt
+    content: |
+      Cloud-init completed successfully
+      Next steps:
+      1. Upload application code
+      2. Run docker-compose up
+      3. Access frontend at http://VM_IP:3000
+      4. Access backend at http://VM_IP:8000
+
+runcmd:
+  - systemctl enable docker
+  - systemctl start docker
+  - usermod -aG docker azureuser
+  - echo "vm.swappiness=10" >> /etc/sysctl.conf
+  - fallocate -l 2G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo "/swapfile none swap sw 0 0" >> /etc/fstab
+  - sysctl -p
+  - mkdir -p /opt/cloudoptima
+  - chown azureuser:azureuser /opt/cloudoptima
+
+final_message: "CloudOptima AI VM setup complete. Upload code and run docker-compose."

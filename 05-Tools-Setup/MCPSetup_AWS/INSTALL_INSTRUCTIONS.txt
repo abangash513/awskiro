@@ -1,0 +1,58 @@
+AWS MCP SERVERS - INSTALLATION INSTRUCTIONS
+============================================
+
+Node.js installation is required but needs manual completion.
+
+STEP 1: INSTALL NODE.JS
+------------------------
+1. Open browser and go to: https://nodejs.org/
+2. Download the LTS version (recommended)
+3. Run the installer
+4. During installation:
+   - Check "Automatically install necessary tools"
+   - Check "Add to PATH"
+5. Complete the installation
+6. Restart PowerShell
+
+STEP 2: VERIFY NODE.JS INSTALLATION
+------------------------------------
+Open a NEW PowerShell window and run:
+   node --version
+   npm --version
+
+Both commands should show version numbers.
+
+STEP 3: INSTALL MCP SERVERS
+----------------------------
+In the MCPSetup_AWS folder, run:
+   .\install-mcp-servers.ps1
+
+This will download and install:
+- AWS KB Retrieval MCP Server
+- AWS MCP Server (Official)
+- AWS Diagram as Code MCP Server
+
+STEP 4: CONFIGURE CLAUDE DESKTOP
+---------------------------------
+Run:
+   .\configure-mcp-claude.ps1
+
+Then restart Claude Desktop.
+
+TROUBLESHOOTING
+---------------
+If Node.js is not found after installation:
+1. Close ALL PowerShell windows
+2. Open a NEW PowerShell window
+3. Try again
+
+If still not working:
+1. Verify Node.js is in PATH:
+   $env:Path -split ';' | Select-String nodejs
+2. Manually add to PATH if needed
+
+REPOSITORIES
+------------
+AWS KB Retrieval: https://github.com/aws-samples/mcp-server-aws-kb-retrieval
+AWS MCP Server: https://github.com/modelcontextprotocol/servers
+AWS Diagram: https://github.com/aws-samples/mcp-server-diagram-as-code

@@ -1,0 +1,563 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'IAM Role and Policies for HRI FAST Scanner Application Deployment'
+
+Parameters:
+  RoleName:
+    Type: String
+    Default: HRI-FAST-Scanner-Deployer
+    Description: Name of the IAM role for HRI FAST Scanner deployment
+  
+  TrustedPrincipalArn:
+    Type: String
+    Description: ARN of the IAM user or role that can assume this role (e.g., arn:aws:iam::212114479343:user/ABangash)
+    Default: ''
+
+Conditions:
+  HasTrustedPrincipal: !Not [!Equals [!Ref TrustedPrincipalArn, '']]
+
+Resources:
+  # IAM Role for HRI FAST Scanner Deployment
+  HRIFastScannerDeployerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      Description: Role for deploying and managing HRI FAST Scanner application
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !If
+                - HasTrustedPrincipal
+                - !Ref TrustedPrincipalArn
+                - !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action: 'sts:AssumeRole'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': 'hri-fast-scanner-deployment'
+      MaxSessionDuration: 43200  # 12 hours
+      Tags:
+        - Key: Application
+          Value: HRI-FAST-Scanner
+        - Key: Purpose
+          Value: Deployment
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  # S3 Permissions Policy
+  S3DeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-S3-Policy
+      Description: S3 permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: S3BucketManagement
+            Effect: Allow
+            Action:
+              - s3:CreateBucket
+              - s3:DeleteBucket
+              - s3:ListBucket
+              - s3:GetBucketLocation
+              - s3:GetBucketVersioning
+              - s3:PutBucketVersioning
+              - s3:GetBucketPolicy
+              - s3:PutBucketPolicy
+              - s3:DeleteBucketPolicy
+              - s3:GetBucketPublicAccessBlock
+              - s3:PutBucketPublicAccessBlock
+              - s3:GetEncryptionConfiguration
+              - s3:PutEncryptionConfiguration
+              - s3:GetBucketCORS
+              - s3:PutBucketCORS
+              - s3:GetBucketWebsite
+              - s3:PutBucketWebsite
+              - s3:DeleteBucketWebsite
+              - s3:GetBucketLogging
+              - s3:PutBucketLogging
+              - s3:GetBucketTagging
+              - s3:PutBucketTagging
+            Resource:
+              - !Sub 'arn:aws:s3:::hri-fast-scanner-*'
+          
+          - Sid: S3ObjectManagement
+            Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetObject
+              - s3:DeleteObject
+              - s3:GetObjectVersion
+              - s3:DeleteObjectVersion
+              - s3:GetObjectAcl
+              - s3:PutObjectAcl
+              - s3:GetObjectTagging
+              - s3:PutObjectTagging
+            Resource:
+              - !Sub 'arn:aws:s3:::hri-fast-scanner-*/*'
+          
+          - Sid: S3ListAllBuckets
+            Effect: Allow
+            Action:
+              - s3:ListAllMyBuckets
+              - s3:GetBucketLocation
+            Resource: '*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # Lambda Permissions Policy
+  LambdaDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-Lambda-Policy
+      Description: Lambda permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: LambdaFunctionManagement
+            Effect: Allow
+            Action:
+              - lambda:CreateFunction
+              - lambda:DeleteFunction
+              - lambda:GetFunction
+              - lambda:GetFunctionConfiguration
+              - lambda:UpdateFunctionCode
+              - lambda:UpdateFunctionConfiguration
+              - lambda:PublishVersion
+              - lambda:CreateAlias
+              - lambda:UpdateAlias
+              - lambda:DeleteAlias
+              - lambda:GetAlias
+              - lambda:ListVersionsByFunction
+              - lambda:ListAliases
+              - lambda:AddPermission
+              - lambda:RemovePermission
+              - lambda:GetPolicy
+              - lambda:InvokeFunction
+              - lambda:TagResource
+              - lambda:UntagResource
+              - lambda:ListTags
+            Resource:
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:hri-fast-scanner-*'
+          
+          - Sid: LambdaListFunctions
+            Effect: Allow
+            Action:
+              - lambda:ListFunctions
+              - lambda:ListEventSourceMappings
+            Resource: '*'
+          
+          - Sid: LambdaLayerManagement
+            Effect: Allow
+            Action:
+              - lambda:PublishLayerVersion
+              - lambda:DeleteLayerVersion
+              - lambda:GetLayerVersion
+              - lambda:ListLayerVersions
+            Resource:
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:layer:hri-fast-scanner-*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # API Gateway Permissions Policy
+  APIGatewayDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-APIGateway-Policy
+      Description: API Gateway permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: APIGatewayManagement
+            Effect: Allow
+            Action:
+              - apigateway:GET
+              - apigateway:POST
+              - apigateway:PUT
+              - apigateway:PATCH
+              - apigateway:DELETE
+            Resource:
+              - !Sub 'arn:aws:apigateway:*::/restapis'
+              - !Sub 'arn:aws:apigateway:*::/restapis/*'
+              - !Sub 'arn:aws:apigateway:*::/tags/*'
+          
+          - Sid: APIGatewayDeployment
+            Effect: Allow
+            Action:
+              - apigateway:POST
+              - apigateway:PATCH
+              - apigateway:DELETE
+            Resource:
+              - !Sub 'arn:aws:apigateway:*::/restapis/*/deployments'
+              - !Sub 'arn:aws:apigateway:*::/restapis/*/deployments/*'
+              - !Sub 'arn:aws:apigateway:*::/restapis/*/stages'
+              - !Sub 'arn:aws:apigateway:*::/restapis/*/stages/*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # DynamoDB Permissions Policy
+  DynamoDBDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-DynamoDB-Policy
+      Description: DynamoDB permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DynamoDBTableManagement
+            Effect: Allow
+            Action:
+              - dynamodb:CreateTable
+              - dynamodb:DeleteTable
+              - dynamodb:DescribeTable
+              - dynamodb:UpdateTable
+              - dynamodb:UpdateTimeToLive
+              - dynamodb:DescribeTimeToLive
+              - dynamodb:UpdateContinuousBackups
+              - dynamodb:DescribeContinuousBackups
+              - dynamodb:TagResource
+              - dynamodb:UntagResource
+              - dynamodb:ListTagsOfResource
+            Resource:
+              - !Sub 'arn:aws:dynamodb:*:${AWS::AccountId}:table/hri-fast-scanner-*'
+          
+          - Sid: DynamoDBDataAccess
+            Effect: Allow
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+            Resource:
+              - !Sub 'arn:aws:dynamodb:*:${AWS::AccountId}:table/hri-fast-scanner-*'
+              - !Sub 'arn:aws:dynamodb:*:${AWS::AccountId}:table/hri-fast-scanner-*/index/*'
+          
+          - Sid: DynamoDBListTables
+            Effect: Allow
+            Action:
+              - dynamodb:ListTables
+            Resource: '*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # IAM Permissions Policy
+  IAMDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-IAM-Policy
+      Description: IAM permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: IAMRoleManagement
+            Effect: Allow
+            Action:
+              - iam:CreateRole
+              - iam:DeleteRole
+              - iam:GetRole
+              - iam:UpdateRole
+              - iam:UpdateAssumeRolePolicy
+              - iam:TagRole
+              - iam:UntagRole
+              - iam:ListRoleTags
+            Resource:
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/hri-fast-scanner-*'
+          
+          - Sid: IAMPolicyManagement
+            Effect: Allow
+            Action:
+              - iam:CreatePolicy
+              - iam:DeletePolicy
+              - iam:GetPolicy
+              - iam:GetPolicyVersion
+              - iam:ListPolicyVersions
+              - iam:CreatePolicyVersion
+              - iam:DeletePolicyVersion
+              - iam:SetDefaultPolicyVersion
+              - iam:TagPolicy
+              - iam:UntagPolicy
+            Resource:
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:policy/hri-fast-scanner-*'
+          
+          - Sid: IAMRolePolicyAttachment
+            Effect: Allow
+            Action:
+              - iam:AttachRolePolicy
+              - iam:DetachRolePolicy
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:GetRolePolicy
+              - iam:ListAttachedRolePolicies
+              - iam:ListRolePolicies
+            Resource:
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/hri-fast-scanner-*'
+          
+          - Sid: IAMPassRole
+            Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource:
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/hri-fast-scanner-*'
+            Condition:
+              StringEquals:
+                'iam:PassedToService':
+                  - lambda.amazonaws.com
+                  - apigateway.amazonaws.com
+                  - dynamodb.amazonaws.com
+          
+          - Sid: IAMListRoles
+            Effect: Allow
+            Action:
+              - iam:ListRoles
+            Resource: '*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # CloudWatch Permissions Policy
+  CloudWatchDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-CloudWatch-Policy
+      Description: CloudWatch permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: CloudWatchLogsManagement
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:DeleteLogGroup
+              - logs:DescribeLogGroups
+              - logs:PutRetentionPolicy
+              - logs:DeleteRetentionPolicy
+              - logs:TagLogGroup
+              - logs:UntagLogGroup
+              - logs:ListTagsLogGroup
+            Resource:
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/hri-fast-scanner-*'
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/apigateway/hri-fast-scanner-*'
+          
+          - Sid: CloudWatchLogsStreams
+            Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:DeleteLogStream
+              - logs:DescribeLogStreams
+              - logs:PutLogEvents
+              - logs:GetLogEvents
+            Resource:
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/hri-fast-scanner-*:*'
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/apigateway/hri-fast-scanner-*:*'
+          
+          - Sid: CloudWatchMetrics
+            Effect: Allow
+            Action:
+              - cloudwatch:PutMetricData
+              - cloudwatch:GetMetricData
+              - cloudwatch:GetMetricStatistics
+              - cloudwatch:ListMetrics
+            Resource: '*'
+          
+          - Sid: CloudWatchAlarms
+            Effect: Allow
+            Action:
+              - cloudwatch:PutMetricAlarm
+              - cloudwatch:DeleteAlarms
+              - cloudwatch:DescribeAlarms
+              - cloudwatch:DescribeAlarmsForMetric
+            Resource:
+              - !Sub 'arn:aws:cloudwatch:*:${AWS::AccountId}:alarm:hri-fast-scanner-*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # CloudFormation Permissions Policy
+  CloudFormationDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-CloudFormation-Policy
+      Description: CloudFormation permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: CloudFormationStackManagement
+            Effect: Allow
+            Action:
+              - cloudformation:CreateStack
+              - cloudformation:UpdateStack
+              - cloudformation:DeleteStack
+              - cloudformation:DescribeStacks
+              - cloudformation:DescribeStackEvents
+              - cloudformation:DescribeStackResources
+              - cloudformation:DescribeStackResource
+              - cloudformation:GetTemplate
+              - cloudformation:GetStackPolicy
+              - cloudformation:SetStackPolicy
+              - cloudformation:ValidateTemplate
+              - cloudformation:ListStacks
+              - cloudformation:ListStackResources
+              - cloudformation:CancelUpdateStack
+              - cloudformation:ContinueUpdateRollback
+            Resource:
+              - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/hri-fast-scanner-*/*'
+          
+          - Sid: CloudFormationChangeSet
+            Effect: Allow
+            Action:
+              - cloudformation:CreateChangeSet
+              - cloudformation:DeleteChangeSet
+              - cloudformation:DescribeChangeSet
+              - cloudformation:ExecuteChangeSet
+              - cloudformation:ListChangeSets
+            Resource:
+              - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/hri-fast-scanner-*/*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # Cognito Permissions Policy
+  CognitoDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-Cognito-Policy
+      Description: Cognito permissions for HRI FAST Scanner deployment
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: CognitoUserPoolManagement
+            Effect: Allow
+            Action:
+              - cognito-idp:CreateUserPool
+              - cognito-idp:DeleteUserPool
+              - cognito-idp:DescribeUserPool
+              - cognito-idp:UpdateUserPool
+              - cognito-idp:CreateUserPoolClient
+              - cognito-idp:DeleteUserPoolClient
+              - cognito-idp:DescribeUserPoolClient
+              - cognito-idp:UpdateUserPoolClient
+              - cognito-idp:ListUserPools
+              - cognito-idp:ListUserPoolClients
+              - cognito-idp:TagResource
+              - cognito-idp:UntagResource
+            Resource:
+              - !Sub 'arn:aws:cognito-idp:*:${AWS::AccountId}:userpool/*'
+          
+          - Sid: CognitoIdentityPoolManagement
+            Effect: Allow
+            Action:
+              - cognito-identity:CreateIdentityPool
+              - cognito-identity:DeleteIdentityPool
+              - cognito-identity:DescribeIdentityPool
+              - cognito-identity:UpdateIdentityPool
+              - cognito-identity:ListIdentityPools
+              - cognito-identity:SetIdentityPoolRoles
+              - cognito-identity:GetIdentityPoolRoles
+              - cognito-identity:TagResource
+              - cognito-identity:UntagResource
+            Resource:
+              - !Sub 'arn:aws:cognito-identity:*:${AWS::AccountId}:identitypool/*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+  # EC2/VPC Permissions Policy (Optional - for VPC deployments)
+  VPCDeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: HRI-FAST-Scanner-VPC-Policy
+      Description: VPC permissions for HRI FAST Scanner deployment (optional)
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: VPCReadAccess
+            Effect: Allow
+            Action:
+              - ec2:DescribeVpcs
+              - ec2:DescribeSubnets
+              - ec2:DescribeSecurityGroups
+              - ec2:DescribeNetworkInterfaces
+              - ec2:DescribeAvailabilityZones
+            Resource: '*'
+          
+          - Sid: SecurityGroupManagement
+            Effect: Allow
+            Action:
+              - ec2:CreateSecurityGroup
+              - ec2:DeleteSecurityGroup
+              - ec2:AuthorizeSecurityGroupIngress
+              - ec2:AuthorizeSecurityGroupEgress
+              - ec2:RevokeSecurityGroupIngress
+              - ec2:RevokeSecurityGroupEgress
+              - ec2:CreateTags
+              - ec2:DeleteTags
+            Resource:
+              - !Sub 'arn:aws:ec2:*:${AWS::AccountId}:security-group/*'
+              - !Sub 'arn:aws:ec2:*:${AWS::AccountId}:vpc/*'
+            Condition:
+              StringLike:
+                'aws:RequestTag/Name': 'hri-fast-scanner-*'
+          
+          - Sid: NetworkInterfaceManagement
+            Effect: Allow
+            Action:
+              - ec2:CreateNetworkInterface
+              - ec2:DeleteNetworkInterface
+              - ec2:DescribeNetworkInterfaces
+              - ec2:CreateNetworkInterfacePermission
+            Resource: '*'
+      Roles:
+        - !Ref HRIFastScannerDeployerRole
+
+Outputs:
+  RoleArn:
+    Description: ARN of the HRI FAST Scanner Deployer Role
+    Value: !GetAtt HRIFastScannerDeployerRole.Arn
+    Export:
+      Name: HRI-FAST-Scanner-Deployer-Role-Arn
+  
+  RoleName:
+    Description: Name of the HRI FAST Scanner Deployer Role
+    Value: !Ref HRIFastScannerDeployerRole
+    Export:
+      Name: HRI-FAST-Scanner-Deployer-Role-Name
+  
+  AssumeRoleCommand:
+    Description: AWS CLI command to assume this role
+    Value: !Sub 'aws sts assume-role --role-arn ${HRIFastScannerDeployerRole.Arn} --role-session-name hri-fast-scanner-deployment --external-id hri-fast-scanner-deployment --duration-seconds 43200'
+  
+  S3PolicyArn:
+    Description: ARN of the S3 Policy
+    Value: !Ref S3DeploymentPolicy
+  
+  LambdaPolicyArn:
+    Description: ARN of the Lambda Policy
+    Value: !Ref LambdaDeploymentPolicy
+  
+  APIGatewayPolicyArn:
+    Description: ARN of the API Gateway Policy
+    Value: !Ref APIGatewayDeploymentPolicy
+  
+  DynamoDBPolicyArn:
+    Description: ARN of the DynamoDB Policy
+    Value: !Ref DynamoDBDeploymentPolicy
+  
+  IAMPolicyArn:
+    Description: ARN of the IAM Policy
+    Value: !Ref IAMDeploymentPolicy
+  
+  CloudWatchPolicyArn:
+    Description: ARN of the CloudWatch Policy
+    Value: !Ref CloudWatchDeploymentPolicy
+  
+  CloudFormationPolicyArn:
+    Description: ARN of the CloudFormation Policy
+    Value: !Ref CloudFormationDeploymentPolicy
+  
+  CognitoPolicyArn:
+    Description: ARN of the Cognito Policy
+    Value: !Ref CognitoDeploymentPolicy
+  
+  VPCPolicyArn:
+    Description: ARN of the VPC Policy
+    Value: !Ref VPCDeploymentPolicy

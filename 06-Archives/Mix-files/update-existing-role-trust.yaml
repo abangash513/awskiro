@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Update trust policy of existing SSO role to allow cross-account access'
+
+Parameters:
+  ManagementAccountId:
+    Type: String
+    Default: '729265419250'
+    Description: 'AWS Account ID of the management account'
+  
+  SSORoleName:
+    Type: String
+    Default: 'AWSReservedSSO_AIM-WellArchitectedReview_ffafce28ad424f54'
+    Description: 'Name of the existing SSO role to update'
+  
+  SSOProviderArn:
+    Type: String
+    Default: 'arn:aws:iam::729265419250:saml-provider/AWSSSO_db6c0d50bf5bdbae_DO_NOT_DELETE'
+    Description: 'ARN of the SSO SAML provider'
+
+Resources:
+  UpdateRoleTrustPolicy:
+    Type: 'Custom::UpdateRoleTrust'
+    Properties:
+      ServiceToken: !GetAtt UpdateRoleTrustFunction.Arn
+      RoleName: !Ref SSORoleName
+      ManagementAccountId: !Ref ManagementAccountId
+      SSOProviderArn: !Ref SSOProviderArn
+
+  UpdateRoleTrustFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: 'UpdateSSORoleTrustPolicy'
+      Runtime: 'python3.11'
+      Handler: 'index.handler'
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 60
+      Code:
+        ZipFile: |
+          import boto3
+          import json
+          import cfnresponse
+          
+          def handler(event, context):
+              try:
+                  iam = boto3.client('iam')
+                  role_name = event['ResourceProperties']['RoleName']
+                  mgmt_account = event['ResourceProperties']['ManagementAccountId']
+                  sso_provider = event['ResourceProperties']['SSOProviderArn']
+                  
+                  if event['RequestType'] in ['Create', 'Update']:
+                      # Update trust policy
+                      trust_policy = {
+                          "Version": "2012-10-17",
+                          "Statement": [
+                              {
+                                  "Sid": "AllowSSOAssumeRole",
+                                  "Effect": "Allow",
+                                  "Principal": {"Federated": sso_provider},
+                                  "Action": ["sts:AssumeRoleWithSAML", "sts:TagSession"],
+                                  "Condition": {
+                                      "StringEquals": {"SAML:aud": "https://signin.aws.amazon.com/saml"}
+                                  }
+                              },
+                              {
+                                  "Sid": "AllowManagementAccountAssumeRole",
+                                  "Effect": "Allow",
+                                  "Principal": {"AWS": f"arn:aws:iam::{mgmt_account}:root"},
+                                  "Action": "sts:AssumeRole"
+                              }
+                          ]
+                      }
+                      
+                      iam.update_assume_role_policy(
+                          RoleName=role_name,
+                          PolicyDocument=json.dumps(trust_policy)
+                      )
+                      
+                      cfnresponse.send(event, context, cfnresponse.SUCCESS, {
+                          'Message': f'Successfully updated trust policy for role {role_name}'
+                      })
+                  
+                  elif event['RequestType'] == 'Delete':
+                      cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
+                  
+              except Exception as e:
+                  print(f'Error: {str(e)}')
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {
+                      'Message': str(e)
+                  })
+
+  LambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: 'UpdateRoleTrustPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'iam:GetRole'
+                  - 'iam:UpdateAssumeRolePolicy'
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/aws-reserved/sso.amazonaws.com/us-west-2/${SSORoleName}'
+
+Outputs:
+  Status:
+    Description: 'Update status'
+    Value: 'Trust policy updated successfully'
+  
+  RoleName:
+    Description: 'Updated role name'
+    Value: !Ref SSORoleName

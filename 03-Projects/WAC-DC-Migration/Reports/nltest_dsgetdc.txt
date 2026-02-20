@@ -1,0 +1,10 @@
+﻿           DC: \\WACPRODDC01.WAC.NET
+      Address: \\10.70.10.10
+     Dom Guid: 45af709c-def3-422a-a158-294dbfa6339b
+     Dom Name: WAC.NET
+  Forest Name: WAC.NET
+ Dc Site Name: Default-First-Site-Name
+Our Site Name: Default-First-Site-Name
+        Flags: GC DS LDAP KDC WRITABLE DNS_DC DNS_DOMAIN DNS_FOREST CLOSE_SITE FULL_SECRET WS DS_8 DS_9 DS_10 0x20000
+The command completed successfully
+

@@ -1,0 +1,5 @@
+"Region","Name","Type","Scheme","State","CreatedTime"
+"us-east-1","muhimbi-alb","application","internal","active","2022-08-04T14:32:10.420000+00:00"
+"us-east-1","prod-muhimbi-alb","application","internal","active","2022-08-04T15:01:25.230000+00:00"
+"us-east-1","staging-mfa-elb","classic","internal","active","2016-04-19T18:55:01.490000+00:00"
+"us-east-1","production-a-mfa-elb","classic","internal","active","2016-04-20T18:29:38.970000+00:00"

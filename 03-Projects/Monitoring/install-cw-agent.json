@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "2.2",
+  "description": "Install CloudWatch Agent on WAC DCs",
+  "mainSteps": [
+    {
+      "action": "aws:runPowerShellScript",
+      "name": "installCloudWatchAgent",
+      "inputs": {
+        "runCommand": [
+          "New-Item -Path C:\\Monitoring -ItemType Directory -Force",
+          "$url = 'https://s3.amazonaws.com/amazoncloudwatch-agent/windows/amd64/latest/amazon-cloudwatch-agent.msi'",
+          "Invoke-WebRequest -Uri $url -OutFile C:\\Monitoring\\amazon-cloudwatch-agent.msi",
+          "Start-Process msiexec.exe -ArgumentList '/i C:\\Monitoring\\amazon-cloudwatch-agent.msi /qn' -Wait",
+          "Write-Output 'CloudWatch Agent installed'"
+        ]
+      }
+    }
+  ]
+}

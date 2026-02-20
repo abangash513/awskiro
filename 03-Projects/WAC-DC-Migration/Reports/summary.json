@@ -1,0 +1,52 @@
+﻿[
+    {
+        "Status":  "PASS",
+        "Name":  "DC List",
+        "File":  "01-dclist.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "DC Locator",
+        "File":  "02-dsgetdc.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "DNS Domain Resolution",
+        "File":  "03-dns-domain.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "DNS LDAP SRV Records",
+        "File":  "04-dns-ldap-srv.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "Time Service Status",
+        "File":  "05-time-status.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "Time Source",
+        "File":  "06-time-source.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "Replication Summary",
+        "File":  "07-replication.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "FSMO Roles",
+        "File":  "08-fsmo.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "AD Domain Controllers",
+        "File":  "09-ad-dcs.txt"
+    },
+    {
+        "Status":  "PASS",
+        "Name":  "Directory Service Errors",
+        "File":  "10-ds-errors.txt"
+    }
+]

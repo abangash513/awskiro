@@ -1,0 +1,479 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'HRI Fast Scanner - Management Account Stack - Deploys Lambda functions, DynamoDB, S3, and IAM roles'
+
+Parameters:
+  ScannerRoleName:
+    Type: String
+    Default: 'HRI-ScannerRole'
+    Description: 'Name of the cross-account IAM role in member accounts'
+  
+  ScanRegions:
+    Type: String
+    Default: 'us-east-1,us-west-2'
+    Description: 'Comma-separated list of AWS regions to scan'
+  
+  NotificationEmail:
+    Type: String
+    Default: ''
+    Description: 'Email address for SNS error notifications (optional)'
+  
+  LogRetentionDays:
+    Type: Number
+    Default: 30
+    Description: 'CloudWatch Logs retention period in days'
+    AllowedValues: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
+  
+  ScheduleExpression:
+    Type: String
+    Default: 'cron(0 2 * * ? *)'
+    Description: 'EventBridge schedule expression for automated scans (default: daily at 2 AM UTC)'
+
+Conditions:
+  CreateSNSTopic: !Not [!Equals [!Ref NotificationEmail, '']]
+
+Resources:
+  # ============================================================================
+  # DynamoDB Table for Findings
+  # ============================================================================
+  FindingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: hri_findings
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: account_id
+          AttributeType: S
+        - AttributeName: check_id
+          AttributeType: S
+        - AttributeName: pillar
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+        - AttributeName: execution_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: account_id
+          KeyType: HASH
+        - AttributeName: check_id
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: pillar-timestamp-index
+          KeySchema:
+            - AttributeName: pillar
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: execution-timestamp-index
+          KeySchema:
+            - AttributeName: execution_id
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: Storage
+
+  # ============================================================================
+  # S3 Bucket for Reports
+  # ============================================================================
+  ReportsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'hri-exports-${AWS::AccountId}-${AWS::Region}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: TransitionToIA
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 30
+                StorageClass: STANDARD_IA
+          - Id: TransitionToGlacier
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 90
+                StorageClass: GLACIER
+          - Id: DeleteOldReports
+            Status: Enabled
+            ExpirationInDays: 365
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: Storage
+
+  ReportsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ReportsBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt ReportsBucket.Arn
+              - !Sub '${ReportsBucket.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': false
+
+  # ============================================================================
+  # SNS Topic for Error Notifications
+  # ============================================================================
+  ErrorNotificationTopic:
+    Type: AWS::SNS::Topic
+    Condition: CreateSNSTopic
+    Properties:
+      TopicName: hri-scanner-errors
+      DisplayName: HRI Scanner Error Notifications
+      Subscription:
+        - Endpoint: !Ref NotificationEmail
+          Protocol: email
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: Notifications
+
+  # ============================================================================
+  # IAM Role for Lambda Execution
+  # ============================================================================
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: HRIScannerExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: HRIScannerPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # Organizations permissions
+              - Sid: OrganizationsAccess
+                Effect: Allow
+                Action:
+                  - 'organizations:ListAccounts'
+                  - 'organizations:DescribeAccount'
+                  - 'organizations:DescribeOrganization'
+                Resource: '*'
+              
+              # Lambda invocation permissions
+              - Sid: LambdaInvoke
+                Effect: Allow
+                Action:
+                  - 'lambda:InvokeFunction'
+                Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:hri-*'
+              
+              # STS assume role permissions
+              - Sid: AssumeRole
+                Effect: Allow
+                Action:
+                  - 'sts:AssumeRole'
+                Resource: !Sub 'arn:aws:iam::*:role/${ScannerRoleName}'
+              
+              # DynamoDB permissions
+              - Sid: DynamoDBAccess
+                Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:UpdateItem'
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:Query'
+                  - 'dynamodb:Scan'
+                Resource:
+                  - !GetAtt FindingsTable.Arn
+                  - !Sub '${FindingsTable.Arn}/index/*'
+              
+              # S3 permissions
+              - Sid: S3Access
+                Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                  - 's3:PutObjectAcl'
+                Resource: !Sub '${ReportsBucket.Arn}/*'
+              
+              # SNS permissions
+              - Sid: SNSPublish
+                Effect: Allow
+                Action:
+                  - 'sns:Publish'
+                Resource: !If
+                  - CreateSNSTopic
+                  - !Ref ErrorNotificationTopic
+                  - !Ref AWS::NoValue
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: IAM
+
+  # ============================================================================
+  # CloudWatch Log Groups
+  # ============================================================================
+  DiscoverAccountsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/hri-discover-accounts
+      RetentionInDays: !Ref LogRetentionDays
+
+  ScanAccountLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/hri-scan-account
+      RetentionInDays: !Ref LogRetentionDays
+
+  PartnerSyncLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/hri-partner-sync
+      RetentionInDays: !Ref LogRetentionDays
+
+  # ============================================================================
+  # Lambda Function: discover_accounts
+  # ============================================================================
+  DiscoverAccountsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: hri-discover-accounts
+      Runtime: python3.12
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 120
+      MemorySize: 256
+      Environment:
+        Variables:
+          SCAN_LAMBDA_ARN: !GetAtt ScanAccountFunction.Arn
+          DYNAMODB_TABLE: !Ref FindingsTable
+          LOG_LEVEL: INFO
+      Code:
+        ZipFile: |
+          # Placeholder - Replace with actual code from discover_accounts.py
+          import json
+          def lambda_handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Deploy actual code using AWS CLI or CDK')
+              }
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: Lambda
+
+  # ============================================================================
+  # Lambda Function: scan_account
+  # ============================================================================
+  ScanAccountFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: hri-scan-account
+      Runtime: python3.12
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 600
+      MemorySize: 1024
+      Environment:
+        Variables:
+          SCANNER_ROLE_NAME: !Ref ScannerRoleName
+          DYNAMODB_TABLE: !Ref FindingsTable
+          S3_BUCKET: !Ref ReportsBucket
+          REGIONS: !Ref ScanRegions
+          LOG_LEVEL: INFO
+          SNS_TOPIC_ARN: !If
+            - CreateSNSTopic
+            - !Ref ErrorNotificationTopic
+            - ''
+      Code:
+        ZipFile: |
+          # Placeholder - Replace with actual code from scan_account.py
+          import json
+          def lambda_handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Deploy actual code using AWS CLI or CDK')
+              }
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: Lambda
+
+  # ============================================================================
+  # Lambda Function: partner_sync
+  # ============================================================================
+  PartnerSyncFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: hri-partner-sync
+      Runtime: python3.12
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 300
+      MemorySize: 512
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref FindingsTable
+          S3_BUCKET: !Ref ReportsBucket
+          PARTNER_BUCKET_PREFIX: partner-central/
+          LOG_LEVEL: INFO
+      Code:
+        ZipFile: |
+          # Placeholder - Replace with actual code from partner_sync.py
+          import json
+          def lambda_handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Deploy actual code using AWS CLI or CDK')
+              }
+      Tags:
+        - Key: Application
+          Value: HRI-Scanner
+        - Key: Component
+          Value: Lambda
+
+  # ============================================================================
+  # EventBridge Rule for Scheduled Execution
+  # ============================================================================
+  ScheduledScanRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: hri-scheduled-scan
+      Description: Triggers HRI scanner on a schedule
+      ScheduleExpression: !Ref ScheduleExpression
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt DiscoverAccountsFunction.Arn
+          Id: DiscoverAccountsTarget
+
+  ScheduledScanPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref DiscoverAccountsFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt ScheduledScanRule.Arn
+
+  # ============================================================================
+  # CloudWatch Alarms
+  # ============================================================================
+  DiscoverAccountsErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: CreateSNSTopic
+    Properties:
+      AlarmName: HRI-DiscoverAccounts-Errors
+      AlarmDescription: Alert when discover_accounts Lambda has errors
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref DiscoverAccountsFunction
+      AlarmActions:
+        - !Ref ErrorNotificationTopic
+
+  ScanAccountErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: CreateSNSTopic
+    Properties:
+      AlarmName: HRI-ScanAccount-Errors
+      AlarmDescription: Alert when scan_account Lambda has high error rate
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref ScanAccountFunction
+      AlarmActions:
+        - !Ref ErrorNotificationTopic
+
+Outputs:
+  FindingsTableName:
+    Description: DynamoDB table name for findings
+    Value: !Ref FindingsTable
+    Export:
+      Name: !Sub '${AWS::StackName}-FindingsTable'
+
+  ReportsBucketName:
+    Description: S3 bucket name for reports
+    Value: !Ref ReportsBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-ReportsBucket'
+
+  DiscoverAccountsFunctionArn:
+    Description: ARN of discover_accounts Lambda function
+    Value: !GetAtt DiscoverAccountsFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-DiscoverAccountsArn'
+
+  ScanAccountFunctionArn:
+    Description: ARN of scan_account Lambda function
+    Value: !GetAtt ScanAccountFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-ScanAccountArn'
+
+  PartnerSyncFunctionArn:
+    Description: ARN of partner_sync Lambda function
+    Value: !GetAtt PartnerSyncFunction.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-PartnerSyncArn'
+
+  LambdaExecutionRoleArn:
+    Description: ARN of Lambda execution role
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-ExecutionRoleArn'
+
+  ErrorNotificationTopicArn:
+    Description: ARN of SNS topic for error notifications
+    Value: !If
+      - CreateSNSTopic
+      - !Ref ErrorNotificationTopic
+      - 'Not Created'
+    Export:
+      Name: !Sub '${AWS::StackName}-ErrorTopicArn'
+
+  ManagementAccountId:
+    Description: Management account ID for member account role trust
+    Value: !Ref AWS::AccountId
+    Export:
+      Name: !Sub '${AWS::StackName}-ManagementAccountId'

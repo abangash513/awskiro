@@ -1,0 +1,79 @@
+================================================================================
+MANUAL COMMANDS FOR AD01 - TYPE THESE ONE BY ONE
+================================================================================
+
+In PowerShell on AD01, type these commands one at a time and press Enter after each:
+
+================================================================================
+STEP 1: CREATE FOLDER
+================================================================================
+
+cd C:\
+mkdir Temp
+cd Temp
+
+================================================================================
+STEP 2: RUN TESTS (Type each command and press Enter)
+================================================================================
+
+Test 1 - DC List:
+nltest /dclist:wac.net > dclist.txt
+
+Test 2 - DC Locator:
+nltest /dsgetdc:wac.net > dsgetdc.txt
+
+Test 3 - Time Status:
+w32tm /query /status > time-status.txt
+
+Test 4 - Time Source:
+w32tm /query /source > time-source.txt
+
+Test 5 - Replication:
+repadmin /replsummary > replication.txt
+
+Test 6 - FSMO Roles:
+netdom query fsmo > fsmo.txt
+
+Test 7 - DNS Domain:
+nslookup wac.net > dns-domain.txt
+
+Test 8 - DNS LDAP SRV:
+nslookup -type=srv _ldap._tcp.dc._msdcs.wac.net > dns-ldap.txt
+
+Test 9 - Event Log Errors:
+wevtutil qe "Directory Service" /c:20 /rd:true /f:text /q:"*[System[(Level=2)]]" > ds-errors.txt
+
+Test 10 - List all DCs:
+dsquery server > dc-servers.txt
+
+================================================================================
+STEP 3: VERIFY FILES WERE CREATED
+================================================================================
+
+dir
+
+You should see 10 .txt files listed.
+
+================================================================================
+STEP 4: DOWNLOAD FILES VIA BEYONDTRUST
+================================================================================
+
+1. In Beyondtrust, click the "File Transfer" tab
+2. On the right side (AD01), navigate to C:\Temp
+3. Select all the .txt files
+4. Click the download button (down arrow icon)
+5. Save them to your Desktop in a folder called "AD01-Verification"
+
+================================================================================
+STEP 5: COPY TO WORKSPACE
+================================================================================
+
+On your local machine, move the files to your workspace:
+
+Move-Item "C:\Users\YourUsername\Desktop\AD01-Verification\*" "path\to\workspace\03-Projects\WAC-DC-Migration\Reports\AD01-Verification\"
+
+================================================================================
+
+DONE! Once files are in your workspace, let me know and I'll analyze them.
+
+================================================================================

@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Add AssumeRole permissions to existing SSO role in Management Account'
+
+Parameters:
+  SSORoleName:
+    Type: String
+    Default: 'AWSReservedSSO_AIM-WellArchitectedReview_ffafce28ad424f54'
+    Description: 'Name of the existing SSO role to update'
+  
+  OrganizationId:
+    Type: String
+    Default: 'o-rnymoexhtu'
+    Description: 'AWS Organization ID (found in AWS Organizations console)'
+
+Resources:
+  CrossAccountAssumeRolePolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: 'CrossAccountAssumeRolePolicy'
+      Description: 'Allows assuming roles in child accounts for cross-account access'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'AssumeRoleInChildAccounts'
+            Effect: 'Allow'
+            Action:
+              - 'sts:AssumeRole'
+            Resource:
+              - !Sub 'arn:aws:iam::*:role/${SSORoleName}'
+            Condition:
+              StringEquals:
+                'aws:PrincipalOrgID': !Ref OrganizationId
+          
+          - Sid: 'ListAccountsAndOrganization'
+            Effect: 'Allow'
+            Action:
+              - 'organizations:ListAccounts'
+              - 'organizations:DescribeOrganization'
+              - 'organizations:DescribeAccount'
+              - 'organizations:ListOrganizationalUnitsForParent'
+              - 'organizations:ListRoots'
+            Resource: '*'
+      
+      Roles:
+        - !Ref SSORoleName
+
+Outputs:
+  PolicyArn:
+    Description: 'ARN of the created cross-account assume role policy'
+    Value: !Ref CrossAccountAssumeRolePolicy
+    Export:
+      Name: 'CrossAccountAssumeRolePolicyArn'
+  
+  SSORole:
+    Description: 'SSO Role that was updated'
+    Value: !Ref SSORoleName
+  
+  Instructions:
+    Description: 'Next steps'
+    Value: 'Deploy the cross-account-role-stackset.yaml to all child accounts using CloudFormation StackSets'

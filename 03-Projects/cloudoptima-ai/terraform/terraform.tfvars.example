@@ -1,0 +1,26 @@
+# CloudOptima AI - Terraform Variables
+# Copy this file to terraform.tfvars and fill in your values
+
+# Resource naming
+prefix              = "cloudoptima"
+resource_group_name = "cloudoptima-rg"
+location            = "eastus"  # Options: eastus, westus2, westeurope, etc.
+
+# Database configuration
+db_admin_username = "cloudoptima"
+db_name           = "cloudoptima"
+db_sku_name       = "B_Standard_B2s"  # B_Standard_B2s (burstable), GP_Standard_D2s_v3 (general purpose)
+
+# Azure Service Principal for Cost Management API
+# Create with: az ad sp create-for-rbac --name cloudoptima-reader --role "Cost Management Reader" --scopes /subscriptions/YOUR_SUBSCRIPTION_ID
+azure_tenant_id     = "00000000-0000-0000-0000-000000000000"
+azure_client_id     = "00000000-0000-0000-0000-000000000000"
+azure_client_secret = "your-client-secret-here"
+
+# Tags
+tags = {
+  Environment = "Production"
+  Project     = "CloudOptima AI"
+  ManagedBy   = "Terraform"
+  Owner       = "Your Name"
+}

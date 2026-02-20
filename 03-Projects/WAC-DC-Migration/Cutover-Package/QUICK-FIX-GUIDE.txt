@@ -1,0 +1,78 @@
+================================================================================
+QUICK FIX GUIDE - Before Running Cutover Again
+================================================================================
+
+CURRENT STATUS:
+  PDC Emulator: WACPRODDC01 (Already transferred ✓)
+  Schema Master: AD01 (Needs transfer)
+  Domain Naming Master: AD01 (Needs transfer)
+  RID Pool Manager: AD02 (Needs transfer)
+  Infrastructure Master: AD02 (Needs transfer)
+
+================================================================================
+STEP 1: Add User to Schema Admins
+================================================================================
+
+Run on ANY DC as Domain Admin:
+
+  Add-ADGroupMember -Identity "Schema Admins" -Members "arifb"
+
+Verify:
+
+  whoami /groups | findstr "Schema"
+
+================================================================================
+STEP 2: Fix ADWS on WACPRODDC02
+================================================================================
+
+Connect to WACPRODDC02 and run:
+
+  Get-Service ADWS
+  Start-Service ADWS
+  Set-Service ADWS -StartupType Automatic
+
+If service doesn't exist:
+
+  Install-WindowsFeature RSAT-AD-PowerShell -IncludeManagementTools
+
+================================================================================
+STEP 3: Log Out and Back In
+================================================================================
+
+IMPORTANT: After adding to Schema Admins, you MUST:
+  1. Log out of WACPRODDC01
+  2. Log back in
+  3. This refreshes group membership
+
+================================================================================
+STEP 4: Run Cutover Again
+================================================================================
+
+cd C:\Users\arifb\Desktop\Cutover-Package\Scripts
+.\2-EXECUTE-CUTOVER.ps1
+
+The script will now:
+  - Check Schema Admins membership (REQUIRED)
+  - Check ADWS on WACPRODDC02 (REQUIRED)
+  - Transfer remaining 4 FSMO roles
+  - Verify each transfer properly
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If script still fails:
+
+1. Check group membership:
+   whoami /groups
+
+2. Check ADWS:
+   Get-Service ADWS -ComputerName WACPRODDC02
+
+3. Check AD connectivity:
+   Get-ADDomainController -Identity WACPRODDC02
+
+4. Check logs:
+   C:\Cutover\Logs\Cutover-*.log
+
+================================================================================

@@ -1,0 +1,41 @@
+{
+  "family": "concierge-medicine-backend",
+  "taskRoleArn": "arn:aws:iam::750299845580:role/concierge-medicine-stack-ECSTaskRole-LyvxWMhUcHSX",
+  "executionRoleArn": "arn:aws:iam::750299845580:role/concierge-medicine-stack-ECSTaskExecutionRole-Cjua0y8nws8f",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "750299845580.dkr.ecr.us-east-1.amazonaws.com/concierge-medicine-backend:latest",
+      "portMappings": [
+        {
+          "containerPort": 3001,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {"name": "NODE_ENV", "value": "test"},
+        {"name": "PORT", "value": "3001"},
+        {"name": "DB_HOST", "value": "concierge-medicine-db.cy3avontjliu.us-east-1.rds.amazonaws.com"},
+        {"name": "DB_PORT", "value": "5432"},
+        {"name": "DB_USER", "value": "concierge_user"},
+        {"name": "DB_PASSWORD", "value": "RockwallHTS1234$$$"},
+        {"name": "DB_NAME", "value": "concierge_medicine"},
+        {"name": "AWS_REGION", "value": "us-east-1"},
+        {"name": "AWS_S3_BUCKET", "value": "concierge-medicine-records-750299845580"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/concierge-medicine",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

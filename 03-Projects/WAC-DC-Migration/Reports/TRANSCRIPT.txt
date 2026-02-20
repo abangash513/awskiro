@@ -1,0 +1,24 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260207050742
+Username: WAC\arifb
+RunAs User: WAC\arifb
+Configuration Name: 
+Machine: WACPRODDC01 (Microsoft Windows NT 10.0.17763.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 2944
+PSVersion: 5.1.17763.8024
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.17763.8024
+BuildVersion: 10.0.17763.8024
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+cmd : I_NetLogonControl failed: Status = 5 0x5 ERROR_ACCESS_DENIED
+At C:\Monitoring\WAC DC Cutover\WAC DC Cutover Verification Script.ps1:126 char:57
++ ... hannel verify" -Cmd { cmd /c ("nltest /sc_verify:" + $Domain) } -OutF ...
++                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (I_NetLogonContr...R_ACCESS_DENIED:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError

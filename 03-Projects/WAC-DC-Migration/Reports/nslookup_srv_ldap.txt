@@ -1,0 +1,65 @@
+﻿Server:  localhost
+Address:  ::1
+
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = w09mvmpaddc01.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = ad01.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = w09mvmpaddc02.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = AD02.WAC.NET
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = wacproddc02.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = wacproddc01.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = wac-dc01.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = wac-dc02.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = W09MVMPADDC01.WAC.NET
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = wachfdc02.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = wachfdc01.wac.net
+_ldap._tcp.dc._msdcs.wac.net	SRV service location:
+	  priority       = 0
+	  weight         = 100
+	  port           = 389
+	  svr hostname   = ad02.wac.net
+w09mvmpaddc01.wac.net	internet address = 10.1.220.20
+

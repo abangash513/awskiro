@@ -1,0 +1,7 @@
+"Name","Type","InstanceClass","Engine","Status","Storage","MultiAZ","Region","Application","Environment"
+"doppio-prod","RDS","db.r7g.2xlarge","aurora-mysql","available","1 GB","False","us-east-1","Doppio","Production"
+"doppio-prod-us-east-1d","RDS","db.r7g.2xlarge","aurora-mysql","available","1 GB","False","us-east-1","Doppio","Production"
+"prod-replica-57b","RDS","db.m5.xlarge","mysql","available","6443 GB","False","us-east-1","Database Replica","Production"
+"prod-replica-8","RDS","db.m7g.xlarge","mysql","available","6443 GB","False","us-east-1","Database Replica","Production"
+"production-db-macchiato","RDS","db.m5.xlarge","mysql","available","600 GB","True","us-east-1","Macchiato","Production"
+"production-db-mfa-5-7","RDS","db.m5.large","mysql","available","100 GB","True","us-east-1","MFA","Production"

@@ -1,0 +1,82 @@
+========================================
+WAC PRODUCTION DC MONITORING REPORT
+========================================
+
+Report Generated: January 23, 2025
+AWS Account: 466090007609
+Region: us-west-2
+
+========================================
+MONITORED INSTANCES
+========================================
+
+WACPRODDC01
+  Instance ID: i-0745579f46a34da2e
+  Status: ACTIVE
+
+WACPRODDC02
+  Instance ID: i-08c78db5cfc6eb412
+  Status: ACTIVE
+
+========================================
+ACTIVE CLOUDWATCH ALARMS (6)
+========================================
+
+1. WACPRODDC01-StatusCheck
+   Status: OK
+
+2. WACPRODDC01-HighCPU
+   Threshold: >70%
+   Status: OK
+
+3. WACPRODDC01-HighMemory
+   Threshold: >70%
+   Status: INSUFFICIENT_DATA
+
+4. WACPRODDC02-StatusCheck
+   Status: OK
+
+5. WACPRODDC02-HighCPU
+   Threshold: >70%
+   Status: OK
+
+6. WACPRODDC02-HighMemory
+   Threshold: >70%
+   Status: INSUFFICIENT_DATA
+
+========================================
+AD HEALTH MONITORING
+========================================
+
+Check Frequency: Every 5 minutes
+Task Name: WACAWSPROD_AD_Health_Monitor
+Status: ACTIVE on both DCs
+
+Monitored Components:
+  - AD Services (NTDS, DNS, Netlogon, KDC, W32Time)
+  - Replication Status & Errors
+  - Replication Lag (Alert if >60 min)
+  - Replication Queue (Alert if >50 items)
+  - SYSVOL Share Accessibility
+  - DNS Resolution
+
+========================================
+ALERT DESTINATIONS
+========================================
+
+Email: agbangash@gmail.com (CONFIRMED)
+SMS: +1-972-302-3236 (ACTIVE)
+
+========================================
+SUMMARY
+========================================
+
+All instances: HEALTHY
+All alarms: OK (2 collecting initial data)
+AD Health Monitoring: ACTIVE
+Alert notifications: CONFIGURED
+
+No action required.
+Monitoring is fully operational.
+
+========================================

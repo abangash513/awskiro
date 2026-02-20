@@ -1,0 +1,15 @@
+﻿
+Name                                           Type   TTL   Section    IPAddress                                
+----                                           ----   ---   -------    ---------                                
+wac.net                                        A      600   Answer     10.70.10.10                              
+wac.net                                        A      600   Answer     10.1.220.21                              
+wac.net                                        A      600   Answer     10.1.220.8                               
+wac.net                                        A      600   Answer     10.1.220.20                              
+wac.net                                        A      600   Answer     10.1.220.6                               
+wac.net                                        A      600   Answer     10.1.220.206                             
+wac.net                                        A      600   Answer     10.70.11.10                              
+wac.net                                        A      600   Answer     10.1.220.205                             
+wac.net                                        A      600   Answer     10.1.220.5                               
+wac.net                                        A      600   Answer     10.1.220.9                               
+
+

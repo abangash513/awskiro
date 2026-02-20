@@ -1,0 +1,117 @@
+{
+    "AwsDev": {
+        "ConnectivityType": "Site to Site",
+        "DevSubnetsDb": "",
+        "AwsManagedAd": {
+            "UsingAwsMad": false
+        },
+        "DevVpcCidr": "10.60.0.0/16",
+        "DevSubnetsAd": "",
+        "PlannedTrustType": "TWO",
+        "AwsAccountId": "749006369142",
+        "DevVpcId": "yes",
+        "OnPremVpnPublicIp": "",
+        "DevSubnetsApp": "",
+        "CutoverStrategy": "Pilot then rollout",
+        "UseAwsManagedAd": false
+    },
+    "OnPremAD": {
+        "Domain": {
+            "FunctionalLevel": 3,
+            "Name": "WAC.NET",
+            "SID": "S-1-5-21-515967899-963894560-725345543",
+            "NetBIOS": "WAC"
+        },
+        "DomainControllers": [
+            {
+                "Name": "AD02",
+                "Fqdn": "AD02.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.9",
+                "ReadOnly": false,
+                "OS": "Windows Server 2008 R2 Datacenter 6.1 (7601)"
+            },
+            {
+                "Name": "W09MVMPADDC01",
+                "Fqdn": "W09MVMPADDC01.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.20",
+                "ReadOnly": false,
+                "OS": "Windows Server 2012 R2 Datacenter 6.3 (9600)"
+            },
+            {
+                "Name": "W09MVMPADDC02",
+                "Fqdn": "W09MVMPADDC02.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.21",
+                "ReadOnly": false,
+                "OS": "Windows Server 2016 Standard 10.0 (14393)"
+            },
+            {
+                "Name": "AD01",
+                "Fqdn": "AD01.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.8",
+                "ReadOnly": false,
+                "OS": "Windows Server 2008 R2 Datacenter 6.1 (7601)"
+            },
+            {
+                "Name": "WACHFDC01",
+                "Fqdn": "WACHFDC01.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.5",
+                "ReadOnly": false,
+                "OS": "Windows Server 2019 Standard Evaluation 10.0 (17763)"
+            },
+            {
+                "Name": "WACHFDC02",
+                "Fqdn": "WACHFDC02.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.6",
+                "ReadOnly": false,
+                "OS": "Windows Server 2019 Standard Evaluation 10.0 (17763)"
+            },
+            {
+                "Name": "WAC-DC01",
+                "Fqdn": "WAC-DC01.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.205",
+                "ReadOnly": false,
+                "OS": "Windows Server 2022 Datacenter 10.0 (20348)"
+            },
+            {
+                "Name": "WAC-DC02",
+                "Fqdn": "WAC-DC02.WAC.NET",
+                "GlobalCatalog": true,
+                "Site": "Default-First-Site-Name",
+                "IP": "10.1.220.206",
+                "ReadOnly": false,
+                "OS": "Windows Server 2022 Datacenter 10.0 (20348)"
+            }
+        ],
+        "GpoCount": 124,
+        "Fsmo": {
+            "InfrastructureMaster": "AD02.WAC.NET",
+            "PdcEmulator": "AD01.WAC.NET",
+            "DomainNamingMaster": "AD01.WAC.NET",
+            "RidMaster": "AD02.WAC.NET",
+            "SchemaMaster": "AD01.WAC.NET"
+        },
+        "ObjectCounts": {
+            "Groups": 546,
+            "Users": 829,
+            "Computers": 1100
+        },
+        "Forest": {
+            "Name": "WAC.NET",
+            "FunctionalLevel": 3
+        }
+    }
+}

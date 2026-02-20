@@ -1,0 +1,119 @@
+╔════════════════════════════════════════════════════════════════╗
+║     WAC PRODUCTION DOMAIN CONTROLLERS - MONITORING REPORT     ║
+╚════════════════════════════════════════════════════════════════╝
+
+📅 Report Date: January 23, 2025
+🔐 AWS Account: 466090007609
+🌎 Region: us-west-2
+📢 SNS Topic: WACAWSPROD_Monitoring
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🖥️  INSTANCE STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ WACPRODDC01
+   Instance ID: i-0745579f46a34da2e
+   State: RUNNING
+   System Status: OK
+   Instance Status: OK
+
+✅ WACPRODDC02
+   Instance ID: i-08c78db5cfc6eb412
+   State: RUNNING
+   System Status: OK
+   Instance Status: OK
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔔 CLOUDWATCH ALARMS (6 Active)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WACPRODDC01:
+  ✅ StatusCheck .................... OK
+  ✅ HighCPU (>70%) ................. OK
+  ⏳ HighMemory (>70%) .............. COLLECTING DATA
+
+WACPRODDC02:
+  ✅ StatusCheck .................... OK
+  ✅ HighCPU (>70%) ................. OK
+  ⏳ HighMemory (>70%) .............. COLLECTING DATA
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏥 ACTIVE DIRECTORY HEALTH MONITORING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Task Name: WACAWSPROD_AD_Health_Monitor
+Frequency: Every 5 minutes
+Status: ✅ ACTIVE on both DCs
+
+Monitored Services:
+  ✓ NTDS (Active Directory Domain Services)
+  ✓ DNS Server
+  ✓ Netlogon
+  ✓ KDC (Kerberos Key Distribution Center)
+  ✓ W32Time (Time Synchronization)
+
+Replication Monitoring:
+  ✓ Replication Status & Errors
+  ✓ Replication Partner Health
+  ✓ Replication Lag Detection (Alert if >60 min)
+  ✓ Replication Queue Monitoring (Alert if >50 items)
+
+Additional Checks:
+  ✓ SYSVOL Share Accessibility
+  ✓ DNS Resolution
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 EVENT LOG COLLECTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CloudWatch Log Groups:
+  • /aws/ec2/wac-prod-dc/system ......... System Errors & Critical
+  • /aws/ec2/wac-prod-dc/ad ............. AD Errors, Critical, Warnings
+  • /aws/ec2/wac-prod-dc/dns ............ DNS Errors & Critical
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📧 ALERT RECIPIENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • abangash@aimconsulting.com (Pending Confirmation)
+  • bgoggins@wac.net (Pending Confirmation)
+  • MPruitt@aimconsulting.com (Pending Confirmation)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  ALERT TRIGGERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You will receive alerts when:
+  🔴 Instance is down or status check fails
+  🔴 CPU utilization exceeds 70% for 10 minutes
+  🔴 Memory utilization exceeds 70% for 10 minutes
+  🔴 Any AD service stops (NTDS, DNS, Netlogon, KDC, W32Time)
+  🔴 AD replication fails or errors detected
+  🔴 Replication lag exceeds 60 minutes
+  🔴 Replication queue exceeds 50 items
+  🔴 SYSVOL share becomes inaccessible
+  🔴 DNS resolution fails
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+System Health: ✅ ALL SYSTEMS OPERATIONAL
+Instances: ✅ HEALTHY (2/2)
+Alarms: ✅ OK (4/6 active, 2 collecting data)
+CloudWatch Agent: ✅ RUNNING
+AD Health Monitoring: ✅ ACTIVE
+Alert Notifications: ⏳ PENDING EMAIL CONFIRMATIONS
+
+⚠️  ACTION REQUIRED:
+Please check your email and confirm SNS subscriptions for:
+  - abangash@aimconsulting.com
+  - bgoggins@wac.net
+  - MPruitt@aimconsulting.com
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This is an automated monitoring report.
+For questions, contact: Arif Bangash (abangash@aimconsulting.com)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -1,0 +1,201 @@
+================================================================================
+ON-PREMISES DC VERIFICATION - INSTRUCTIONS
+================================================================================
+
+Run these verification tests on your on-premises domain controllers BEFORE cutover.
+
+This will establish a baseline and identify any issues that need to be fixed before
+migrating workloads to AWS.
+
+================================================================================
+
+WHICH DCs TO TEST:
+================================================================================
+
+Priority 1 (MUST TEST - These hold FSMO roles):
+- AD01.WAC.NET (10.1.220.8) - PDC Emulator, Schema Master, Domain Naming Master
+- AD02.WAC.NET (10.1.220.9) - RID Pool Manager, Infrastructure Master
+
+Priority 2 (SHOULD TEST - Newer DCs):
+- WACHFDC01.WAC.NET (10.1.220.5) - Windows Server 2019
+- WACHFDC02.WAC.NET (10.1.220.6) - Windows Server 2019
+- WAC-DC01.WAC.NET (10.1.220.205) - Windows Server 2022
+- WAC-DC02.WAC.NET (10.1.220.206) - Windows Server 2022
+
+Priority 3 (OPTIONAL - Legacy DCs):
+- W09MVMPADDC01.WAC.NET (10.1.220.20) - Windows Server 2012 R2
+- W09MVMPADDC02.WAC.NET (10.1.220.21) - Windows Server 2016
+
+================================================================================
+
+STEP 1: COPY SCRIPTS TO ON-PREM DC
+================================================================================
+
+Option A: Via Network Share (if accessible)
+---
+1. From your workstation, copy the scripts to the on-prem DC:
+
+copy "C:\path\to\workspace\03-Projects\WAC-DC-Migration\Scripts\Quick-Verification.ps1" "\\AD01.WAC.NET\C$\Temp\"
+copy "C:\path\to\workspace\03-Projects\WAC-DC-Migration\Scripts\Fix-TimeSync-Simple.ps1" "\\AD01.WAC.NET\C$\Temp\"
+
+
+Option B: Via RDP
+---
+1. RDP to the on-prem DC (e.g., AD01.WAC.NET)
+2. Copy the scripts from your local machine via \\tsclient\C (if drive sharing is enabled)
+3. Or manually copy/paste the script content into new .ps1 files on the DC
+
+================================================================================
+
+STEP 2: RUN VERIFICATION ON EACH DC
+================================================================================
+
+On each on-prem DC, run PowerShell as Administrator:
+
+cd C:\Temp
+powershell -ExecutionPolicy Bypass -File "Quick-Verification.ps1" -Domain wac.net
+
+
+The script will create a folder: C:\Setup\Logs\QuickVerify-<timestamp>\
+
+================================================================================
+
+STEP 3: COLLECT RESULTS
+================================================================================
+
+After running on each DC, copy the results back to your workstation:
+
+For AD01:
+copy "\\AD01.WAC.NET\C$\Setup\Logs\QuickVerify-*" "C:\WAC-Verification\AD01\" /E
+
+For AD02:
+copy "\\AD02.WAC.NET\C$\Setup\Logs\QuickVerify-*" "C:\WAC-Verification\AD02\" /E
+
+For WACHFDC01:
+copy "\\WACHFDC01.WAC.NET\C$\Setup\Logs\QuickVerify-*" "C:\WAC-Verification\WACHFDC01\" /E
+
+(Repeat for each DC you tested)
+
+================================================================================
+
+STEP 4: ORGANIZE RESULTS IN WORKSPACE
+================================================================================
+
+Move all collected results to your workspace:
+
+Move-Item "C:\WAC-Verification\*" "path\to\workspace\03-Projects\WAC-DC-Migration\Reports\OnPrem-Verification\"
+
+================================================================================
+
+WHAT TO LOOK FOR IN ON-PREM RESULTS
+================================================================================
+
+Critical Issues (MUST FIX before cutover):
+- Time synchronization failures (especially on PDC Emulator AD01)
+- Replication failures (any DC showing failures > 0%)
+- DNS resolution issues
+- FSMO role holder not responding
+
+Warnings (SHOULD FIX before cutover):
+- High replication deltas (> 1 hour)
+- Directory Service errors in event log
+- Missing LDAP SRV records
+
+Expected Findings (KNOWN ISSUES - Document but don't block cutover):
+- Windows Server 2008 R2 deprecation warnings (AD01, AD02)
+- Legacy functional level warnings
+
+================================================================================
+
+COMPARISON CHECKLIST
+================================================================================
+
+After collecting results from both AWS and on-prem DCs, compare:
+
+1. Replication Health:
+   - AWS DCs should have 0 failures (like WACPRODDC01 does)
+   - On-prem DCs should also have 0 failures
+   - If on-prem has failures, fix them BEFORE cutover
+
+2. Time Synchronization:
+   - AD01 (PDC) should sync from external source
+   - All other DCs should sync from AD01 or domain hierarchy
+   - AWS DCs are syncing correctly (verified)
+
+3. DNS Records:
+   - All DCs should have A records
+   - All DCs should have LDAP SRV records
+   - AWS DCs are registered correctly (verified)
+
+4. Event Logs:
+   - Check for recurring errors on on-prem DCs
+   - AWS DCs have 0 errors (verified)
+
+================================================================================
+
+QUICK COMMAND REFERENCE
+================================================================================
+
+Run these on each on-prem DC for quick checks:
+
+# Check replication
+repadmin /replsummary
+
+# Check time sync (on PDC - AD01)
+w32tm /query /status
+w32tm /query /source
+
+# Check FSMO roles
+netdom query fsmo
+
+# Check for errors
+Get-EventLog -LogName "Directory Service" -EntryType Error -Newest 20
+
+# Check DNS registration
+nslookup $env:COMPUTERNAME
+
+================================================================================
+
+TIMELINE
+================================================================================
+
+1. Day 1: Run verification on AD01 and AD02 (FSMO holders)
+2. Day 2: Run verification on WACHFDC01, WACHFDC02, WAC-DC01, WAC-DC02
+3. Day 3: Analyze all results and create comparison report
+4. Day 4: Fix any critical issues found
+5. Day 5: Re-run verification on DCs where issues were fixed
+6. Day 6-7: Final review and cutover planning
+
+================================================================================
+
+CUTOVER DECISION CRITERIA
+================================================================================
+
+READY FOR CUTOVER if:
+- All on-prem DCs show 0 replication failures
+- Time sync working on all DCs (especially PDC)
+- No critical errors in Directory Service logs
+- DNS resolution working for all DCs
+- AWS DCs passing all tests (CONFIRMED - WACPRODDC01 is healthy)
+
+NOT READY FOR CUTOVER if:
+- Any DC has replication failures > 5%
+- PDC Emulator (AD01) time sync not working
+- Critical errors in Directory Service logs
+- DNS resolution failures
+- FSMO role holders not responding
+
+================================================================================
+
+NEED HELP?
+================================================================================
+
+After collecting on-prem verification results, copy them to your workspace and
+let me know. I'll analyze them and provide:
+
+1. Comparison report (AWS vs On-Prem)
+2. List of issues that must be fixed before cutover
+3. Recommendations for cutover timing
+4. Step-by-step cutover plan
+
+================================================================================

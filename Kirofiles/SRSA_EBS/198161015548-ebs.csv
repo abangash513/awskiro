@@ -1,0 +1,180 @@
+account_id,region,volume_id,volume_name,environment,volume_type,size_gb,iops_provisioned,throughput_mbps,state,is_attached,attached_instance_id,attached_instance_name,attachment_device,volume_classification,latest_snapshot_id,latest_snapshot_time,days_since_last_snapshot,encrypted,kms_key_id,multi_attach_enabled,rightsizing_recommendation
+198161015548,us-east-1,vol-72f16337,,Prod,gp3,100,3000,125,in-use,Yes,i-a12f2a8b,ops-search-d,/dev/sda1,Root/Internal,snap-0b3a0062f4c57ebb2,2025-12-03 23:18:20,0,No,,No,Keep as is
+198161015548,us-east-1,vol-e8c4b804,ops-log-0,Prod,gp3,100,3000,125,in-use,Yes,i-be4f7601,ops-logs-0,/dev/sda1,Root/Internal,snap-0339ca2cc321e9d63,2025-12-03 23:18:22,0,No,,No,Keep as is
+198161015548,us-east-1,vol-0abe524a044941b91,New Bastion,Prod,gp3,20,3000,125,in-use,Yes,i-029c9d615067b36c1,bastion,/dev/sda1,Root/Internal,snap-01fe49068fe1de005,2025-12-03 23:18:26,0,Yes,arn:aws:kms:us-east-1:198161015548:key/94be3c58-2dcc-477f-ac41-f69265f1ee43,No,Keep as is
+198161015548,us-east-1,vol-76193bde,,Prod,gp3,50,3000,125,in-use,Yes,i-15c46892,staging-mfa-0,/dev/sda1,Root/Internal,snap-07173758d838ca3aa,2022-12-12 20:57:41,1087,No,,No,Keep as is
+198161015548,us-east-1,vol-0d3c148f3dc6b3e6e,,Prod,gp3,30,3000,125,in-use,Yes,i-09305503247b3b2eb,muhimbi-test,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-eb9db643,,Prod,gp3,50,3000,125,in-use,Yes,i-89f05a0e,production-a-mfa-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-e5f7450a,,Prod,gp3,100,3000,125,in-use,Yes,i-0f755cb1,ops-ops-0,/dev/sda1,Root/Internal,snap-00777d722b69f67ea,2025-12-03 23:18:23,0,No,,No,Keep as is
+198161015548,us-east-1,vol-06c6783e16745168e,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-1,vol-00db2aa47a7d9c778,staging-slave-old,Prod,gp3,100,3000,125,available,No,,,,Unattached,snap-034960a34d70411c9,2025-07-23 03:26:01,134,No,,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-0020d0cd8a81b98b7,,Prod,gp3,30,3000,125,in-use,Yes,i-01008e20280904c67,production-a-slave-2,/dev/sda1,Root/Internal,snap-05cdb05eb7619d53a,2023-10-12 21:56:45,783,No,,No,Keep as is
+198161015548,us-east-1,vol-0f938ccf35dd79c13,,Prod,gp3,30,3000,125,in-use,Yes,i-020fc76b27bc2729e,msnyder-muhimbi-test,/dev/sda1,Root/Internal,snap-02adb9b7514e61f3f,2024-02-02 19:49:29,670,No,,No,Keep as is
+198161015548,us-east-1,vol-045a147e5cefdba2c,,Prod,gp3,8,3000,125,in-use,Yes,i-0159503f72c77e1e5,production-a-corp-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-099c77de730069a0d,,Prod,gp3,50,3000,125,in-use,Yes,i-0cf6e6a70c40a6a21,staging-web-test2,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-09987f51f2e743473,,Prod,gp3,60,3000,125,available,No,,,,Unattached,snap-09d604bde791c8d2c,2024-02-29 16:44:54,644,No,,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-012143f44a124ea7b,,Prod,gp3,60,3000,125,in-use,Yes,i-0e67a8be33d600e3c,muhimbi-test-rmosley,/dev/sda1,Root/Internal,snap-0782c64e21ed9190b,2024-02-29 16:05:42,644,No,,No,Keep as is
+198161015548,us-east-1,vol-ea1dbcae,,Prod,gp3,8,3000,125,in-use,Yes,i-5b08ffb7,ops-nat,/dev/xvda,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-09350a5e1189753de,,Prod,gp3,100,3000,125,in-use,Yes,i-043114ca52c5e8164,production-a-media-2,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0d17791413ff802ff,,Prod,gp3,200,3000,150,in-use,Yes,i-0b794f52c9e2278b0,production-muhimbi-node-1,/dev/sda1,Root/Internal,snap-059118e5117b21f5d,2022-09-01 19:13:27,1190,No,,No,Keep as is
+198161015548,us-east-1,vol-b7c4c759,,Prod,gp3,20,3000,125,in-use,Yes,i-0d6e0ade,production-a-database-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-129db6ba,,Prod,gp3,50,3000,125,in-use,Yes,i-8af05a0d,production-a-mfa-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-2cffc863,,Prod,gp3,20,3000,125,in-use,Yes,i-4d83e062,production-cache-c,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-8e259a96,,Prod,gp3,100,3000,125,in-use,Yes,i-9ab42e7b,ops-search-e,/dev/sda1,Root/Internal,snap-0cd876171358b5af8,2025-12-03 23:18:21,0,No,,No,Keep as is
+198161015548,us-east-1,vol-9e5c2570,,Prod,gp3,20,3000,125,in-use,Yes,i-19859fc9,staging-database-0,/dev/sda1,Root/Internal,snap-0237412c1635d745b,2022-10-27 20:17:26,1133,No,,No,Keep as is
+198161015548,us-east-1,vol-0f9d2dbae849dc695,test-ops-logs-puppet-test,Prod,gp3,100,3000,125,in-use,Yes,i-0c7c653e29bd1b0c4,test-ops-logs-puppet-test,/dev/sda1,Root/Internal,snap-09cd18dc74ee280ca,2025-12-03 23:18:27,0,Yes,arn:aws:kms:us-east-1:198161015548:key/94be3c58-2dcc-477f-ac41-f69265f1ee43,No,Keep as is
+198161015548,us-east-1,vol-a3cf0343,,Prod,gp3,20,3000,125,in-use,Yes,i-a915407c,staging-memcached-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-5971d4b9,,Prod,gp3,20,3000,125,in-use,Yes,i-efc4fb3a,staging-corp-0,/dev/sda1,Root/Internal,snap-043392201dc79bd54,2023-01-11 21:46:51,1057,No,,No,Keep as is
+198161015548,us-east-1,vol-077746cc2c9ce90ab,,Prod,sc1,2048,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-01746af0bc322a349,ops-logs-0,Prod,gp3,3000,9000,250,in-use,Yes,i-be4f7601,ops-logs-0,/dev/sdf,Data/External,snap-06a933848d8d1c6bc,2025-12-03 23:18:22,0,Yes,arn:aws:kms:us-east-1:198161015548:key/94be3c58-2dcc-477f-ac41-f69265f1ee43,No,Keep as is
+198161015548,us-east-1,vol-0ebd5c9264f39f857,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-1,vol-721b1ebb,,Prod,gp3,100,3000,125,in-use,Yes,i-27e568ce,production-c-lb-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-ed0e98a8,,Prod,gp3,10,3000,125,in-use,Yes,i-a409368e,puppetmaster.old,/dev/sdf,Data/External,snap-0465614f511274bab,2025-12-03 23:18:20,0,No,,No,Keep as is
+198161015548,us-east-1,vol-0d0629a60b9c638ca,,Prod,gp3,30,3000,125,available,No,,,,Unattached,snap-08b67835390288099,2024-02-02 23:35:27,670,No,,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-00820a573c6962d5e,relay.onehub.com,Prod,gp3,10,3000,125,in-use,Yes,i-0cf3b307c22a8235f,relay.onehub.com,/dev/sda1,Root/Internal,,,,Yes,arn:aws:kms:us-east-1:198161015548:key/004f6daa-ff85-4bb1-8047-1eecaf76ab6f,No,Keep as is
+198161015548,us-east-1,vol-00a75f56cad3430d4,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-1,vol-07d253eb1ff29fc21,,Prod,gp3,100,3000,125,in-use,Yes,i-0e002527a16392fa1,production-a-cache_size_worker-0,/dev/sda1,Root/Internal,snap-03f21479e37a84506,2020-08-27 02:29:57,1925,No,,No,Keep as is
+198161015548,us-east-1,vol-96259a8e,,Prod,gp3,1000,3000,250,in-use,Yes,i-9ab42e7b,ops-search-e,/dev/sdd,Data/External,snap-01fa198986dcfa134,2025-12-03 23:18:21,0,No,,No,Keep as is
+198161015548,us-east-1,vol-0926790e2e6b79073,Bastion,Prod,gp3,20,3000,125,available,No,,,,Unattached,snap-0de258c93a7f8ebdc,2021-05-03 21:16:40,1675,Yes,arn:aws:kms:us-east-1:198161015548:key/94be3c58-2dcc-477f-ac41-f69265f1ee43,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-0c417555ae0e79846,,Prod,gp3,2000,6000,250,in-use,Yes,i-037dd9ecaff681075,production-a-web-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-c7852427,,Prod,gp3,20,3000,125,in-use,Yes,i-8bc9cd5e,production-a-corp-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-06b1b51de0a896a05,,Prod,gp3,6144,3000,125,in-use,Yes,i-19859fc9,staging-database-0,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-a1bd7969,,Prod,gp3,100,3000,125,in-use,Yes,i-a9752240,production-c-service-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-87f5ffcf,,Prod,gp3,20,3000,125,in-use,Yes,i-85cebc6f,production-cache-a,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0c1162e41668f64ae,production-a-slave-2 mysql-expired,Prod,sc1,6144,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-6ef1632b,,Prod,gp3,1000,3000,250,in-use,Yes,i-a12f2a8b,ops-search-d,/dev/sdd,Data/External,snap-004b54dbf8d41d6bf,2025-12-03 23:18:20,0,No,,No,Keep as is
+198161015548,us-east-1,vol-5bc10593,production-c-service-0,Prod,gp3,2000,6000,250,in-use,Yes,i-a9752240,production-c-service-0,/dev/sdf,Data/External,snap-0643325c2f774aa6e,2025-12-04 07:14:02,0,No,,No,Keep as is
+198161015548,us-east-1,vol-07cc36afc4bb8ee9f,,Prod,sc1,3072,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0e261936cf812ce54,,Prod,gp3,100,3000,125,in-use,Yes,i-00823396f38206fdb,staging-muhimbi-node-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-05bfe000b0fd41867,,Prod,gp3,20,3000,125,in-use,Yes,i-05bc73a0c7e562ce0,staging-slave-0,/dev/sda1,Root/Internal,snap-0b8f656b51b74e8ea,2022-12-12 20:38:04,1087,No,,No,Keep as is
+198161015548,us-east-1,vol-07b64f7e44e35dcb5,db-slave-from-snapshot,Prod,sc1,3072,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-02d2292b7df94944a,,Prod,gp3,100,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-086c01ca4acd41b0c,production-a-database-0,Prod,sc1,3072,0,0,available,No,,,,Unattached,snap-04949f7d99ba08e76,2023-09-25 03:26:03,801,No,,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-08a6e6ab158fa3ef6,,Prod,gp3,30,3000,125,available,No,,,,Unattached,snap-0620b9bf2d1f1987a,2022-08-03 16:15:02,1219,No,,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-0c06bf786015791ce,,Prod,gp3,100,3000,125,in-use,Yes,i-059b953a2e312a39c,production-c-media-0,/dev/sda1,Root/Internal,snap-0afa1d0fd686aea2b,2017-10-16 18:23:08,2971,No,,No,Keep as is
+198161015548,us-east-1,vol-06caf610234f2415d,,Prod,gp3,8,3000,125,in-use,Yes,i-0eb8bbfffdd2f3ec7,production-nat-3,/dev/xvda,Root/Internal,snap-007e53b2f89c73514,2020-08-27 02:28:21,1925,No,,No,Keep as is
+198161015548,us-east-1,vol-04a6455707fddf6d5,,Prod,gp3,100,3000,125,in-use,Yes,i-047dbab75f6716d09,staging-muhimbi-node-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-dc81fcaa,,Prod,gp3,100,3000,125,in-use,Yes,i-52cfda7c,office-previewer,/dev/sda1,Root/Internal,snap-037372d523309a826,2022-08-12 20:57:16,1209,No,,No,Keep as is
+198161015548,us-east-1,vol-b7cd3257,,Prod,gp3,100,3000,125,in-use,Yes,i-42700397,staging-service-0,/dev/sda1,Root/Internal,snap-0cc118528ee13009e,2022-02-10 16:36:50,1393,No,,No,Keep as is
+198161015548,us-east-1,vol-be39dc11,,Prod,gp3,2048,6144,250,in-use,Yes,i-2c7f76f9,production-a-media-1,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-02b8d11a200f79d63,production-db-slave-data-old,Prod,sc1,3072,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0a322923ffcb5c406,test-stage-lb-0,Prod,gp3,100,3000,125,available,No,,,,Unattached,snap-0629df6ab1e8ec6e7,2020-09-25 17:44:31,1896,Yes,arn:aws:kms:us-east-1:198161015548:key/004f6daa-ff85-4bb1-8047-1eecaf76ab6f,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-5e0d86be,Staging FTP,Prod,gp3,50,3000,125,in-use,Yes,i-fafc372e,staging-ftp-0,/dev/sda1,Root/Internal,snap-00dd5ec0b534dbdc6,2021-03-12 22:18:03,1727,No,,No,Keep as is
+198161015548,us-east-1,vol-07c2607c9c9b0cb6c,,Prod,sc1,3072,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0f204bdda5b774af1,,Prod,sc1,3072,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-046e153a3c66b7e46,,Prod,gp3,100,3000,125,in-use,Yes,i-072f2909dbd9bb9dc,staging-media-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0b4cceea9a3ef8d7b,,Prod,gp3,30,3000,125,in-use,Yes,i-00053af887e6eb4d6,Muhimbi-prod-image-with-IAM-role,/dev/sda1,Root/Internal,snap-03ac0d4a15bcba911,2024-02-08 09:33:25,665,No,,No,Keep as is
+198161015548,us-east-1,vol-8a0e98cf,,Prod,gp3,100,3000,125,in-use,Yes,i-a409368e,puppetmaster.old,/dev/sda1,Root/Internal,snap-06c9f24155488d9dd,2025-12-03 23:18:20,0,No,,No,Keep as is
+198161015548,us-east-1,vol-81697f61,,Prod,gp3,100,3000,125,in-use,Yes,i-385dafef,production-a-lb-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-9c5c2572,,Prod,gp3,100,3000,125,in-use,Yes,i-9e859f4e,staging-lb-0,/dev/sda1,Root/Internal,snap-0bad4e0745e150be8,2020-08-05 06:58:46,1947,No,,No,Keep as is
+198161015548,us-east-1,vol-59afc1b9,,Prod,gp3,1000,3000,250,in-use,Yes,i-88be045c,production-a-ftp-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-8ee1335e,,Prod,gp3,100,3000,125,in-use,Yes,i-4c667ad1,ops-graphite-0,/dev/sda1,Root/Internal,snap-0b2ced068bb5197f4,2025-12-03 23:18:24,0,No,,No,Keep as is
+198161015548,us-east-1,vol-022e55231d428c4cf,,Prod,sc1,4096,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0c1863a74f22edc7d,puppetmaster,Prod,gp3,50,3000,125,in-use,Yes,i-07cbd6be0a1c90f79,puppetmaster,/dev/sda1,Root/Internal,snap-05c680340eb64ccdb,2025-12-03 23:18:25,0,Yes,arn:aws:kms:us-east-1:198161015548:key/004f6daa-ff85-4bb1-8047-1eecaf76ab6f,No,Keep as is
+198161015548,us-east-1,vol-00aedad067ea42874,,Prod,gp3,2048,3000,125,in-use,Yes,i-03969fef458cd4167,production-c-media-2,/dev/sdb,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-09f64da8e3bf1ce9f,test-office-previewer-latest-windows,Prod,gp3,100,3000,125,in-use,Yes,i-0dbb4653a8cfca4ae,test-office-previewer-latest-windows,/dev/sda1,Root/Internal,snap-0d83bb538a275c69c,2025-12-03 23:18:26,0,Yes,arn:aws:kms:us-east-1:198161015548:key/94be3c58-2dcc-477f-ac41-f69265f1ee43,No,Keep as is
+198161015548,us-east-1,vol-08aa3182591b65a18,,Prod,gp3,200,3000,150,in-use,Yes,i-0f33f800c022e418a,production-muhimbi-node-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-918ef94d,,Prod,gp3,1000,3000,250,in-use,Yes,i-0f755cb1,ops-ops-0,/dev/sdf,Data/External,snap-00b04f6763bc9618a,2025-12-03 23:18:23,0,No,,No,Keep as is
+198161015548,us-east-1,vol-5652fdb6,,Prod,gp3,100,3000,125,in-use,Yes,i-2c7f76f9,production-a-media-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0c70448b73f2d8dca,a-slave-0-volume,Prod,sc1,3072,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-72e4d2bb,,Prod,gp3,20,3000,125,in-use,Yes,i-d75fe03e,production-c-database-0,/dev/sda1,Root/Internal,snap-02e5027e799b43145,2023-10-13 00:12:55,783,No,,No,Keep as is
+198161015548,us-east-1,vol-068df5c437cdf9c7b,,Prod,gp3,100,3000,125,in-use,Yes,i-03969fef458cd4167,production-c-media-2,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0680d6a6b76debdde,,Prod,gp3,100,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-440f9901,,Prod,gp3,300,3000,125,in-use,Yes,i-a409368e,puppetmaster.old,/dev/sdg,Data/External,snap-02ef7098058b75aa7,2025-12-03 23:18:20,0,No,,No,Keep as is
+198161015548,us-east-1,vol-3fc694a3,,Prod,gp3,2048,6144,250,in-use,Yes,i-88be045c,production-a-ftp-0,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-06a7d20eed2f06c38,tim-nginx-testing,Prod,gp3,8,3000,125,in-use,Yes,i-0a086d7d2a4ba25a9,tim-nginx-testing,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-09f5796cb7377c942,,Prod,gp3,6144,9216,250,in-use,Yes,i-0d6e0ade,production-a-database-0,/dev/xvdf,Data/External,snap-0129352d8d59ae642,2025-07-16 03:40:36,141,No,,No,Keep as is
+198161015548,us-east-1,vol-059b6d9e0dbc3b20e,,Prod,gp3,6144,12288,250,in-use,Yes,i-d07743c7,production-a-slave-0,/dev/xvdf,Data/External,snap-0cb0fec850183a68c,2023-11-20 14:00:03,745,No,,No,Keep as is
+198161015548,us-east-1,vol-048499970c2a1c346,media-volume-c,Prod,gp3,2048,6144,250,in-use,Yes,i-01400e7184ad7c200,production-c-media-1,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0dd862bcbf4ec2549,github-actions,Prod,gp3,25,3000,125,in-use,Yes,i-0003603fb4581513a,github-actions,/dev/sda1,Root/Internal,snap-09a4e076d5316a16d,2021-08-03 19:20:06,1584,No,,No,Keep as is
+198161015548,us-east-1,vol-7eb4b9f0,,Prod,gp3,6144,9216,250,in-use,Yes,i-d75fe03e,production-c-database-0,/dev/sdf,Data/External,snap-0ef1901866e4bfa57,2023-10-13 00:12:55,783,No,,No,Keep as is
+198161015548,us-east-1,vol-0e3108f54675e2b82,production-a-lb-1,Prod,gp3,100,3000,125,in-use,Yes,i-0b8a939d50617cfec,production-a-lb-1,/dev/sda1,Root/Internal,snap-056504806223708b4,2024-03-15 05:18:07,629,Yes,arn:aws:kms:us-east-1:198161015548:key/004f6daa-ff85-4bb1-8047-1eecaf76ab6f,No,Keep as is
+198161015548,us-east-1,vol-023fb44586cb1f20f,test-staging-ftp,Prod,gp3,50,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-3b1aeef3,,Prod,gp3,3000,9000,250,in-use,Yes,i-9da1e574,production-c-web-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0baf647b19bccf1af,production-c-slave-0-volume,Prod,gp3,6144,3000,125,in-use,Yes,i-5141feb8,production-c-slave-0,/dev/xvdf,Data/External,snap-01ff304a60e2fbb7d,2023-09-15 15:10:35,811,No,,No,Keep as is
+198161015548,us-east-1,vol-049359d24a8f2ed9e,,Prod,gp3,30,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0bc9844e7c34bb5f0,,Prod,gp3,100,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0554febacc86f807a,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-1,vol-03fb82f27882d5be3,,Prod,gp3,30,3000,125,in-use,Yes,i-0bafd0f85880cfc37,production-a-slave-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-03ae17594d49d4216,test-ops-search-0,Prod,gp3,200,3000,150,in-use,Yes,i-000051928735a1912,test-ops-search-0,/dev/sda1,Root/Internal,snap-0ad75adf9f5c7c446,2025-12-03 23:18:29,0,Yes,arn:aws:kms:us-east-1:198161015548:key/94be3c58-2dcc-477f-ac41-f69265f1ee43,No,Keep as is
+198161015548,us-east-1,vol-0c2c2c7938629d7fe,ops-logs-999,Prod,gp3,100,3000,125,in-use,Yes,i-00866c38318c69753,ops-logs-999,/dev/sda1,Root/Internal,snap-0f7fb026b0a8a6e74,2025-12-03 23:18:28,0,Yes,arn:aws:kms:us-east-1:198161015548:key/94be3c58-2dcc-477f-ac41-f69265f1ee43,No,Keep as is
+198161015548,us-east-1,vol-0832bc602052d1392,media-volume,Prod,gp3,2048,6144,250,in-use,Yes,i-059b953a2e312a39c,production-c-media-0,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-08135236cabc40507,,Prod,gp3,100,3000,125,available,No,,,,Unattached,,,,Yes,arn:aws:kms:us-east-1:198161015548:key/004f6daa-ff85-4bb1-8047-1eecaf76ab6f,No,Keep as is
+198161015548,us-east-1,vol-097bf20f0407e7fd9,staging-slave-0,Prod,gp3,105,3000,125,in-use,Yes,i-05bc73a0c7e562ce0,staging-slave-0,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0159e4f440dde8be5,,Prod,gp3,30,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-064bd9f39148de0f6,production-a-slave-2 mysql,Prod,gp3,6144,3000,125,in-use,Yes,i-01008e20280904c67,production-a-slave-2,/dev/sdf,Data/External,snap-07f10ac9f3ced96d9,2024-06-05 20:46:18,546,No,,No,Keep as is
+198161015548,us-east-1,vol-05c39509e32abdeae,,Prod,gp3,100,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-09141d53b5d0abde9,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-1,vol-03d800afea33a9caf,,Prod,gp3,20,3000,125,in-use,Yes,i-0c1358c5d58d9527a,production-c-slave-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0c9e84b11d1b21a6b,,Prod,gp3,50,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0492c454b8b4ab619,,Prod,gp3,100,3000,125,in-use,Yes,i-01400e7184ad7c200,production-c-media-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-ae374502,,Prod,gp3,20,3000,125,in-use,Yes,i-d07743c7,production-a-slave-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0c5a07a9500cef3b5,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-1,vol-0bc403f5d6cd362c0,,Prod,gp3,100,3000,125,in-use,Yes,i-09abb9e2cfa017272,staging-muhimbi-node-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-9ad6787a,production-a-service-0,Prod,gp3,2000,6000,250,in-use,Yes,i-53d3da86,production-a-service-0,/dev/sdf,Data/External,snap-00b320f83d088de30,2025-12-04 07:14:02,0,No,,No,Keep as is
+198161015548,us-east-1,vol-0bd416004da427a74,,Prod,gp3,3000,9000,250,in-use,Yes,i-0f4443498033bdbf8,production-c-web-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0170ec57cd44d67b3,production-db-slave-0-volume,Prod,sc1,3072,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0a29d0328c5f5b457,,Prod,gp3,2048,3000,125,in-use,Yes,i-043114ca52c5e8164,production-a-media-2,/dev/sdb,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-093dd0ca5f627f999,,Prod,gp3,30,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-04c5fc41b22e819d7,,Prod,sc1,6144,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0c53908acd7ed4e23,,Prod,gp3,100,3000,125,in-use,Yes,i-060098e5e6b5ad472,staging-muhimbi-node-1,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0564a0474f61bac91,,Prod,gp3,8,3000,125,in-use,Yes,i-0d106f55f0dd4fcdc,rescue-instance-a,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-89ec0d69,,Prod,gp3,2000,6000,250,in-use,Yes,i-6545ccb0,production-a-web-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-2e52fdce,production-a-media-0 root,Prod,gp3,100,3000,125,in-use,Yes,i-d87e770d,production-a-media-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-00585fd3f6288881f,,Prod,gp3,100,3000,125,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-00cee4c5494651d9d,staging-db-0-vol,Prod,gp3,105,3000,125,available,No,,,,Unattached,snap-01c9c0d64ffdf60e9,2025-11-18 17:45:17,16,No,,No,Keep as is
+198161015548,us-east-1,vol-00985f88762d2a739,,Prod,gp3,10,3000,125,in-use,Yes,i-0478dda6d47023e11,relay.onehubstaging.internal,/dev/sda1,Root/Internal,snap-07cb7d6fe726661b4,2020-11-28 22:16:01,1831,No,,No,Keep as is
+198161015548,us-east-1,vol-0abbc2b879298fc63,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-1,vol-04f464e5,,Prod,gp3,50,3000,125,in-use,Yes,i-060794d4,staging-web-0,/dev/sda1,Root/Internal,snap-03ccf60052d77adf7,2024-05-08 18:38:56,575,No,,No,Keep as is
+198161015548,us-east-1,vol-e5d8ee2c,,Prod,gp3,20,3000,125,in-use,Yes,i-5141feb8,production-c-slave-0,/dev/sda1,Root/Internal,snap-057367f79818af58c,2023-09-15 15:10:35,811,No,,No,Keep as is
+198161015548,us-east-1,vol-08e78e57b101edb81,production-c-slave-1 mysql,Prod,gp3,6144,9216,125,in-use,Yes,i-0c1358c5d58d9527a,production-c-slave-1,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0732e11f25ca1075b,,Prod,gp3,40,3000,125,available,No,,,,Unattached,snap-0800ae50d867cecc1,2024-02-28 22:44:28,644,No,,No,Delete if unattached > 30 days
+198161015548,us-east-1,vol-02881fbcf30241db1,,Prod,gp3,8,3000,125,in-use,Yes,i-0490009a252a79db0,mission-mysql,/dev/xvda,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-0e381b8867cfb5ed8,production-a-slave-1_mysql,Prod,gp3,6144,3000,125,in-use,Yes,i-0bafd0f85880cfc37,production-a-slave-1,/dev/sdf,Data/External,snap-04e018d143017ac70,2025-12-04 19:30:38,0,No,,No,Keep as is
+198161015548,us-east-1,vol-bb39dc14,,Prod,gp3,2048,6144,250,in-use,Yes,i-d87e770d,production-a-media-0,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-074e389f583e4689e,,Prod,sc1,6144,0,0,available,No,,,,Unattached,,,,No,,No,Keep as is
+198161015548,us-east-1,vol-4113bca1,,Prod,gp3,100,3000,125,in-use,Yes,i-53d3da86,production-a-service-0,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-2,vol-08628b5864b9cc688,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-073530f7a7dd4f714,stage-source,Prod,gp2,105,315,0,in-use,Yes,i-05e80ed206905b62f,staging-database-source,/dev/sdf,Data/External,snap-04ad04d5ed8518341,2023-01-17 23:31:28,1051,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-043d894734dbb46c4,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-053e9798f012ccb98,,Prod,gp3,8,3000,125,in-use,Yes,i-0a4890503b8ec083b,new-bastion,/dev/xvda,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-2,vol-083289eb2ba52fc5e,,Prod,gp3,105,3000,125,in-use,Yes,i-09c5f37643e036865,mysql-upgrade,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-2,vol-023706ade22f812ad,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-03fa22ed1cc2115ce,,Prod,gp2,20,100,0,in-use,Yes,i-05e80ed206905b62f,staging-database-source,/dev/sda1,Root/Internal,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-0a43b720cf53253a6,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-0620dee75aed951db,,Prod,gp3,20,3000,125,in-use,Yes,i-02904074725f14fa6,staging-database-replica,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-2,vol-0d563e0800d536633,stage-replica,Prod,gp3,105,3000,125,in-use,Yes,i-02904074725f14fa6,staging-database-replica,/dev/sdf,Data/External,,,,No,,No,Keep as is
+198161015548,us-east-2,vol-06c7f1c8a8659fba6,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-05278b69a8dc0f4a5,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-06d06f94a5b281721,,Prod,gp3,20,3000,125,in-use,Yes,i-09c5f37643e036865,mysql-upgrade,/dev/sda1,Root/Internal,,,,No,,No,Keep as is
+198161015548,us-east-2,vol-0caa69e48de4092c8,Puppet-enterprise-root,Prod,gp3,105,3000,125,available,No,,,,Unattached,,,,Yes,arn:aws:kms:us-east-2:198161015548:key/72cbf037-f6fb-476c-99eb-cc6d1481a257,No,Keep as is
+198161015548,us-east-2,vol-0bcf423afbfd74b46,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-04d543b7e85aa194c,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-06eda403c013e1ea1,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-022d4893dc342bfc6,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-east-2,vol-0b5c521fc0866568c,,Prod,gp2,105,315,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-1,vol-021a3dbde78804acf,,Prod,gp2,1000,3000,0,in-use,Yes,i-0cd3b6aaf9dadb07d,opensearch-test,/dev/sdd,Data/External,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-1,vol-06086e69a36c34d33,,Prod,gp2,100,300,0,in-use,Yes,i-0cd3b6aaf9dadb07d,opensearch-test,/dev/sda1,Root/Internal,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-1,vol-0969857cac4a6d1fd,,Prod,gp2,1000,3000,0,in-use,Yes,i-015d864871acc6280,ops-search,/dev/sdd,Data/External,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-1,vol-02ee27a3c47655edf,,Prod,gp2,100,300,0,in-use,Yes,i-015d864871acc6280,ops-search,/dev/sda1,Root/Internal,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-00568b1222a3c6349,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-08465ecd57700c9f5,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-057b92f513617e158,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0c97acb9b0fff0974,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0f9bf720bba7d4d98,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-04d91d793866bb9d8,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0de77b178635ea05c,,Prod,gp2,30,100,0,in-use,Yes,i-09ccc6ac0b3f0339a,muhimbi-node0,/dev/sda1,Root/Internal,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-090a7f8216c4fe4ef,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0587e099a2e1da13a,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0925e71c4fab84e28,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-06591921c83f13874,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0e72fe55c217aaa03,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0d568d197a97c3f54,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-03000f4e4adcdcd62,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-030927c3c57f97ca5,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-022ee4bd00df52deb,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0c83b15a637f727d4,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-08b6934a4f6331166,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-09f1cd34142f6282d,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-0fd2a580004fb37b2,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3
+198161015548,us-west-2,vol-048e8bd0820c010cd,,Prod,gp2,30,100,0,available,No,,,,Unattached,,,,No,,No,Convert gp2→gp3

@@ -1,0 +1,21 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install serve for production
+RUN npm install -g serve
+
+# Copy package files
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm install
+
+# Copy source code
+COPY frontend/ .
+
+# Build for production
+RUN npm run build
+
+EXPOSE 3000
+
+# Serve the production build
+CMD ["serve", "-s", "build", "-l", "3000"]

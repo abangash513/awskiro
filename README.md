@@ -1,1 +1,0 @@
-# AWSKiro Workspace

@@ -1,0 +1,66 @@
+﻿Replication Summary Start Time: 2026-02-07 06:56:48
+
+
+
+Beginning data collection for replication summary, this may take awhile:
+
+  .............
+
+
+
+
+
+Source DSA          largest delta    fails/total %%   error
+
+ AD01                      10m:57s    0 /   5    0  
+
+ AD02                      03m:00s    0 /  10    0  
+
+ W09MVMPADDC01             58m:14s    0 /  10    0  
+
+ W09MVMPADDC02             41m:32s    0 /  20    0  
+
+ WAC-DC01                  52m:14s    0 /  30    0  
+
+ WAC-DC02                  10m:57s    0 /  20    0  
+
+ WACHFDC01                 02m:27s    0 /  15    0  
+
+ WACHFDC02                 11m:22s    0 /   5    0  
+
+ WACPRODDC01               02m:18s    0 /  10    0  
+
+ WACPRODDC02               03m:00s    0 /  10    0  
+
+
+
+
+
+Destination DSA     largest delta    fails/total %%   error
+
+ AD01                      03m:00s    0 /  15    0  
+
+ AD02                      10m:38s    0 /  15    0  
+
+ W09MVMPADDC01             02m:08s    0 /  15    0  
+
+ W09MVMPADDC02                :52s    0 /  15    0  
+
+ WAC-DC01                  02m:50s    0 /  15    0  
+
+ WAC-DC02                     :23s    0 /  15    0  
+
+ WACHFDC01                 57m:55s    0 /  15    0  
+
+ WACHFDC02                 02m:19s    0 /  15    0  
+
+ WACPRODDC01               11m:23s    0 /  15    0  
+
+
+
+
+
+Experienced the following operational errors trying to retrieve replication information:
+
+        1722 - WACPRODDC02
+

@@ -1,0 +1,19 @@
+﻿{
+    "Recommendations":  [
+                            "Terminate unused stopped instances or create AMIs and delete instances",
+                            "Review S3 lifecycle policies, enable Intelligent-Tiering, and delete old versions",
+                            "Review Lambda memory allocation and timeout settings for optimization",
+                            "Set retention policies on CloudWatch Logs to reduce storage costs",
+                            "Review and delete old snapshots to reduce storage costs"
+                        ],
+    "AnalysisDate":  "2025-12-22 12:29:55",
+    "Findings":  [
+                     "Found 3 stopped EC2 instances still incurring EBS costs",
+                     "Found 86 S3 buckets",
+                     "Found 12 Lambda functions",
+                     "Found 82 log groups without retention policies",
+                     "Found 13 snapshots older than 90 days"
+                 ],
+    "AccountId":  "212114479343",
+    "EstimatedSavings":  110
+}

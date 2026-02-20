@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+
+# Environment
+.env
+*.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.dtmp
+
+# Large archives
+*.tar.gz
+*.zip
+
+# Kiro cache
+.kiro/cache/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+tfplan

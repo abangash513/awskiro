@@ -1,0 +1,201 @@
+================================================================================
+WACPRODDC02 CONNECTIVITY FIX - COPY/PASTE INSTRUCTIONS
+================================================================================
+
+CURRENT SITUATION:
+- 3 FSMO roles successfully transferred to WACPRODDC01 ✓
+- 2 FSMO roles failed to transfer to WACPRODDC02 (RID Master, Infrastructure Master)
+- Root cause: ADWS service not running/accessible on WACPRODDC02
+
+GOAL:
+- Fix ADWS connectivity on WACPRODDC02
+- Transfer remaining 2 roles from AD01/AD02 to WACPRODDC02
+- Complete the migration
+
+================================================================================
+STEP 1: FIX WACPRODDC02 (Run on WACPRODDC02)
+================================================================================
+
+Option A - Quick Fix (if ADWS service exists):
+----------------------------------------------
+# Check ADWS status
+Get-Service ADWS
+
+# Start ADWS
+Start-Service ADWS
+
+# Set to automatic startup
+Set-Service ADWS -StartupType Automatic
+
+# Verify it's running
+Get-Service ADWS
+
+# Test local connectivity
+Test-NetConnection -ComputerName localhost -Port 9389
+
+
+Option B - Full Fix Script (recommended):
+-----------------------------------------
+# Copy FIX-WACPRODDC02-CONNECTIVITY.ps1 to WACPRODDC02
+# Then run:
+cd C:\Cutover\Scripts
+.\FIX-WACPRODDC02-CONNECTIVITY.ps1
+
+
+Option C - If ADWS doesn't exist (Server Core):
+-----------------------------------------------
+# Check if RSAT-AD-PowerShell is installed
+Get-WindowsFeature RSAT-AD-PowerShell
+
+# Install if missing (this includes ADWS)
+Install-WindowsFeature RSAT-AD-PowerShell -IncludeManagementTools
+
+# Start ADWS
+Start-Service ADWS
+Set-Service ADWS -StartupType Automatic
+
+
+================================================================================
+STEP 2: VERIFY CONNECTIVITY (Run on WACPRODDC01)
+================================================================================
+
+# Test ADWS port from WACPRODDC01
+Test-NetConnection 10.70.11.10 -Port 9389
+
+# Expected result: TcpTestSucceeded : True
+
+# Test AD cmdlet access
+Get-ADDomainController -Identity WACPRODDC02
+
+# Expected result: Should return DC information without errors
+
+
+================================================================================
+STEP 3: TRANSFER REMAINING ROLES (Run on WACPRODDC01)
+================================================================================
+
+Option A - Quick Transfer:
+--------------------------
+# Transfer both roles at once
+Move-ADDirectoryServerOperationMasterRole -Identity WACPRODDC02 -OperationMasterRole RIDMaster,InfrastructureMaster -Force
+
+# Verify transfer
+netdom query fsmo
+
+
+Option B - Full Transfer Script (recommended):
+----------------------------------------------
+# Run the automated script
+cd C:\Cutover\Scripts
+.\TRANSFER-REMAINING-ROLES.ps1
+
+
+================================================================================
+STEP 4: VERIFY FINAL STATE (Run on WACPRODDC01)
+================================================================================
+
+# Check FSMO roles
+netdom query fsmo
+
+# Expected output:
+# Schema master               WACPRODDC01.WAC.NET
+# Domain naming master        WACPRODDC01.WAC.NET
+# PDC                         WACPRODDC01.WAC.NET
+# RID pool manager            WACPRODDC02.WAC.NET  ← Should be DC02
+# Infrastructure master       WACPRODDC02.WAC.NET  ← Should be DC02
+
+# Force replication
+repadmin /syncall /AdeP
+
+# Run post-cutover verification
+.\3-POST-CUTOVER-VERIFY.ps1
+
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If ADWS still won't start on WACPRODDC02:
+-----------------------------------------
+1. Check Windows Firewall:
+   Get-NetFirewallRule | Where-Object {$_.DisplayName -like "*ADWS*"}
+
+2. Create firewall rule if missing:
+   New-NetFirewallRule -DisplayName "Active Directory Web Services (TCP-In)" `
+       -Direction Inbound -Protocol TCP -LocalPort 9389 -Action Allow -Profile Domain
+
+3. Check AWS Security Group:
+   - Ensure WACPRODDC02 security group allows port 9389 inbound from WACPRODDC01
+   - Source: 10.70.11.0/24 (or specific IP of WACPRODDC01)
+   - Port: 9389
+   - Protocol: TCP
+
+
+If transfer still fails:
+------------------------
+Alternative method using ntdsutil (doesn't require ADWS):
+
+1. On WACPRODDC02, run:
+   ntdsutil
+   roles
+   connections
+   connect to server WACPRODDC02
+   quit
+   transfer rid master
+   transfer infrastructure master
+   quit
+   quit
+
+2. Verify:
+   netdom query fsmo
+
+
+================================================================================
+RISK ASSESSMENT
+================================================================================
+
+Current Risk: LOW
+- 3 of 5 roles already on AWS (60% complete)
+- PDC Emulator (most critical) is on WACPRODDC01 ✓
+- AD replication is healthy ✓
+- Authentication is working ✓
+
+Remaining Risk:
+- RID Master and Infrastructure Master still on on-prem (AD01/AD02)
+- If AD01/AD02 go offline before transfer completes:
+  * Can't create new AD objects (users, computers, groups)
+  * Cross-domain reference updates may fail
+
+Mitigation:
+- Complete the transfer ASAP
+- The fix is straightforward (start ADWS service)
+- No rollback needed - just complete the migration
+
+
+================================================================================
+QUICK REFERENCE - COPY/PASTE COMMANDS
+================================================================================
+
+ON WACPRODDC02:
+--------------
+Start-Service ADWS
+Set-Service ADWS -StartupType Automatic
+Get-Service ADWS
+
+
+ON WACPRODDC01:
+--------------
+Test-NetConnection 10.70.11.10 -Port 9389
+Move-ADDirectoryServerOperationMasterRole -Identity WACPRODDC02 -OperationMasterRole RIDMaster,InfrastructureMaster -Force
+netdom query fsmo
+repadmin /syncall /AdeP
+
+
+================================================================================
+FILES CREATED:
+================================================================================
+1. FIX-WACPRODDC02-CONNECTIVITY.ps1 - Run on WACPRODDC02 to fix ADWS
+2. TRANSFER-REMAINING-ROLES.ps1 - Run on WACPRODDC01 to complete transfer
+3. This file - Copy/paste instructions
+
+================================================================================
